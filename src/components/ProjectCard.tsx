@@ -7,18 +7,36 @@ interface ProjectCardProps {
   description: string;
   techStack: string[];
   impact: string;
+  link?: string;
 }
 
-const ProjectCard = ({ title, tagline, description, techStack, impact }: ProjectCardProps) => {
+const ProjectCard = ({ title, tagline, description, techStack, impact, link }: ProjectCardProps) => {
   return (
     <div
       className="relative bg-zinc-900/40 backdrop-blur-xl rounded-xl p-6 border border-zinc-700/50 hover:border-blue-500/50 transition-all duration-300 group hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/20"
     >
       <div className="flex items-start justify-between mb-3">
         <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent group-hover:from-blue-300 group-hover:to-purple-300 transition-all">
-          {title}
+          {link ? (
+            <a href={link} target="_blank" rel="noopener noreferrer" className="hover:underline decoration-blue-400/30 underline-offset-4">
+              {title}
+            </a>
+          ) : (
+            title
+          )}
         </h3>
-        <ExternalLink className="w-5 h-5 text-zinc-500 group-hover:text-blue-400 transition-colors" />
+        {link ? (
+          <a 
+            href={link} 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="p-1 hover:bg-white/5 rounded-full transition-colors"
+          >
+            <ExternalLink className="w-5 h-5 text-zinc-500 group-hover:text-blue-400 transition-colors" />
+          </a>
+        ) : (
+          <ExternalLink className="w-5 h-5 text-zinc-500 group-hover:text-blue-400 transition-colors" />
+        )}
       </div>
       
       <p className="text-zinc-300 mb-4 font-medium text-sm">{tagline}</p>

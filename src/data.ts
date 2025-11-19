@@ -32,7 +32,8 @@ export const projects = [
     tagline: "Real-Time Layer: Event Streaming",
     description: "Built a high-concurrency event management platform handling thousands of simultaneous users. Optimized WebSocket connections for sub-second latency and implemented Redis caching strategies for live attendee tracking.",
     techStack: ["Golang", "WebSockets", "Redis", "React"],
-    impact: "⚡ 10K+ Concurrent Users"
+    impact: "⚡ 10K+ Concurrent Users",
+    link: "https://owlylive.netlify.app/"
   }
 ];
 
