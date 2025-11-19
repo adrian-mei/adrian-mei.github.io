@@ -4,7 +4,7 @@ import * as THREE from 'three';
 
 // Interactive 3D Infrastructure Map Hero
 const InfrastructureMap = () => {
-  const mountRef = useRef(null);
+  const mountRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -28,7 +28,12 @@ const InfrastructureMap = () => {
     scene.add(hub);
 
     // Create orbiting nodes (Projects/Destinations)
-    const nodes = [];
+    interface Node {
+      mesh: THREE.Mesh;
+      angle: number;
+      radius: number;
+    }
+    const nodes: Node[] = [];
     const nodeColors = [0x8b5cf6, 0x06b6d4, 0x10b981, 0xf59e0b];
     
     for (let i = 0; i < 4; i++) {
@@ -61,7 +66,7 @@ const InfrastructureMap = () => {
     camera.position.z = 20;
     camera.position.y = 5;
 
-    const handleMouseMove = (e) => {
+    const handleMouseMove = (e: MouseEvent) => {
       mouseRef.current.x = (e.clientX / window.innerWidth) * 2 - 1;
       mouseRef.current.y = -(e.clientY / window.innerHeight) * 2 + 1;
     };
@@ -120,7 +125,16 @@ const InfrastructureMap = () => {
 };
 
 // Enhanced Project Card with Tech Stack
-const ProjectCard = ({ title, tagline, description, techStack, impact, index }) => {
+interface ProjectCardProps {
+  title: string;
+  tagline: string;
+  description: string;
+  techStack: string[];
+  impact: string;
+  index: number;
+}
+
+const ProjectCard: React.FC<ProjectCardProps> = ({ title, tagline, description, techStack, impact, index }) => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -240,7 +254,7 @@ const Portfolio = () => {
     { icon: BookOpen, label: 'Learning at CCSF', color: 'text-purple-400' }
   ];
 
-  const scrollToSection = (sectionId) => {
+  const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     element?.scrollIntoView({ behavior: 'smooth' });
     setActiveSection(sectionId);
