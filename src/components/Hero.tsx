@@ -9,7 +9,7 @@ interface HeroProps {
 const Hero = ({ scrollToSection }: HeroProps) => {
   return (
     <section id="home" className="relative h-screen flex items-center justify-center overflow-hidden">
-      {/* <InfrastructureMap /> */}
+      <InfrastructureMap />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/50 to-zinc-950 pointer-events-none md:hidden" />
       
       <div className="relative z-10 text-center px-6 max-w-5xl">
