@@ -1,4 +1,6 @@
+# ---------------------------
 # Logs
+# ---------------------------
 logs
 *.log
 npm-debug.log*
@@ -7,18 +9,48 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
+# ---------------------------
+# Dependencies
+# ---------------------------
+node_modules/
 
-# Editor directories and files
+# ---------------------------
+# Build artifacts
+# ---------------------------
+dist/
+dist-ssr/
+.vite/
+
+# ---------------------------
+# Environment variables
+# ---------------------------
+*.local
+.env
+.env.local
+.env.*.local
+
+# ---------------------------
+# Editor / IDE files
+# ---------------------------
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
+
+# Windows / Visual Studio Files (safe to keep ignored)
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# ---------------------------
+# TypeScript build info
+# ---------------------------
+*.tsbuildinfo
+
+# ---------------------------
+# Optional: Test/Coverage output
+# ---------------------------
+coverage/
+*.lcov
