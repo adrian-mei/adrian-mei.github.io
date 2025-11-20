@@ -32,7 +32,7 @@ export const projects = [
     title: "Kindly-Labs",
     tagline: "Community Layer: Tech for Social Good",
     description: "Leading the charge to bridge the digital divide. We build custom web solutions for immigrant-owned businesses, empowering 15+ entrepreneurs to thrive in the digital economy.",
-    techStack: ["React", "Python", "PostgreSQL", "Mentorship"],
+    techStack: ["React", "Python", "PostgreSQL", "Mentorship", "Volunteering"],
     impact: "💚 Empowered 15+ Businesses",
     link: "https://www.kindly-labs.org/"
   },
@@ -41,7 +41,7 @@ export const projects = [
     title: "Owly-Live",
     tagline: "Real-Time Layer: Event Streaming",
     description: "Engineered for the massive scale of live events. Optimized WebSockets and Redis caching to handle 10k+ concurrent users with sub-second latency.",
-    techStack: ["Golang", "WebSockets", "Redis", "React"],
+    techStack: ["Golang", "WebSockets", "Redis", "React", "Flutter"],
     impact: "⚡ 10K+ Concurrent Users",
     link: "https://owlylive.netlify.app/"
   }
