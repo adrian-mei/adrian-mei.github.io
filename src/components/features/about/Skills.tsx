@@ -1,6 +1,6 @@
 // src/components/about/Skills.tsx
 import React from 'react';
-import { skills } from '../../data';
+import { skills } from '../../../data';
 
 const Skills = () => {
   // Group skills for better display

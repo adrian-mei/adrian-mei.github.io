@@ -1,5 +1,5 @@
 import React from 'react';
-import { AudioGenerator } from './AudioGenerator';
+import { AudioGenerator } from '../features/audio/AudioGenerator';
 
 interface NavigationProps {
   activeSection: string;
