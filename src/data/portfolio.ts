@@ -24,7 +24,8 @@ export const projects = [
     tagline: "Community Layer: Tech for Social Good",
     description: "Leading the charge to bridge the digital divide. We build custom web solutions for immigrant-owned businesses, empowering 15+ entrepreneurs to thrive in the digital economy.",
     techStack: ["React", "Python", "PostgreSQL", "Mentorship"],
-    impact: "💚 Empowered 15+ Businesses"
+    impact: "💚 Empowered 15+ Businesses",
+    link: "https://www.kindly-labs.org/"
   },
   {
     // FULL STACK / REAL TIME (The "Builder" Hook)
