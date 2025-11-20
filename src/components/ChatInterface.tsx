@@ -3,7 +3,16 @@ import { MessageSquare, X, Send, Bot, User, Sparkles, ArrowUp } from 'lucide-rea
 import { useMockLLM, Message } from '../hooks/useMockLLM';
 
 const ChatInterface = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(() => {
+    const saved = localStorage.getItem('adrian_ai_is_open');
+    return saved ? JSON.parse(saved) : false;
+  });
+  
+  // Persist open state
+  useEffect(() => {
+    localStorage.setItem('adrian_ai_is_open', JSON.stringify(isOpen));
+  }, [isOpen]);
+
   const [inputValue, setInputValue] = useState('');
   const { messages, isTyping, sendMessage, currentSuggestions } = useMockLLM();
   const messagesEndRef = useRef<HTMLDivElement>(null);
