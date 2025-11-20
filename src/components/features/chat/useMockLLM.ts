@@ -24,6 +24,14 @@ interface ContactFlowState {
   };
 }
 
+// Helper: Select random variation if text is an array
+const resolveResponseText = (text: string | string[]): string => {
+  if (Array.isArray(text)) {
+    return text[Math.floor(Math.random() * text.length)];
+  }
+  return text;
+};
+
 // --- THE HOOK ---
 export const useMockLLM = () => {
   // Initialize state from localStorage if available
@@ -61,6 +69,9 @@ export const useMockLLM = () => {
       data: { name: '', email: '', message: '' }
     };
   });
+
+  // Context Awareness
+  const [lastTopicId, setLastTopicId] = useState<string | undefined>(undefined);
 
   // Persist state changes
   useEffect(() => {
@@ -170,7 +181,7 @@ export const useMockLLM = () => {
       }
 
       // 2. Normal Logic (Brain)
-      const match = findBestMatch(content);
+      const match = findBestMatch(content, lastTopicId);
       
       // Check if this topic triggers a flow
       if (match?.action === 'contact_form') {
@@ -179,21 +190,26 @@ export const useMockLLM = () => {
           step: 'name', 
           data: { name: '', email: '', message: '' } 
         });
-        streamResponse(match.text);
+        setLastTopicId(match.id);
+        streamResponse(resolveResponseText(match.text));
         setCurrentSuggestions(match.suggestions);
         return;
       }
 
       // Standard Response
-      const responseText = match ? match.text : FALLBACK_RESPONSE.text;
+      const responseText = match ? resolveResponseText(match.text) : resolveResponseText(FALLBACK_RESPONSE.text);
       const nextSuggestions = match ? match.suggestions : FALLBACK_RESPONSE.suggestions;
       
+      if (match) {
+        setLastTopicId(match.id);
+      }
+
       streamResponse(responseText);
       setCurrentSuggestions(nextSuggestions);
 
-    }, 800); // 800ms "thinking" time
+    }, 1500); // 1.5s "thinking" time (simulated latency)
 
-  }, [streamResponse, contactFlow]); // Dependency on contactFlow is crucial
+  }, [streamResponse, contactFlow, lastTopicId]); // Dependency on contactFlow is crucial
 
   return {
     messages,

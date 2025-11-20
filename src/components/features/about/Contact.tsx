@@ -32,7 +32,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="mt-24 bg-zinc-900/30 border border-zinc-800 rounded-2xl p-8 md:p-12">
+    <div id="contact" className="mt-24 bg-zinc-900/30 border border-zinc-800 rounded-2xl p-8 md:p-12">
       <div className="text-center mb-10">
         <h3 className="text-3xl font-bold mb-4 text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text">
           Let's Build Something Meaningful

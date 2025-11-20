@@ -18,12 +18,19 @@ const ChatInterface = () => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [hasUnread, setHasUnread] = useState(false);
 
-  // Auto-scroll to bottom of chat
+  // Auto-scroll to bottom of chat on new message or typing
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
     }
   }, [messages, isTyping]);
+
+  // Force scroll to bottom on open/load (without smooth behavior to be instant)
+  useEffect(() => {
+    if (isOpen && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'auto' });
+    }
+  }, [isOpen]);
 
   // Show notification badge after a delay
   useEffect(() => {
@@ -50,11 +57,44 @@ const ChatInterface = () => {
     if (!isOpen) setHasUnread(false);
   };
 
+  // Handle clicks on internal links (e.g. /contact) to scroll instead of navigate
+  const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    const target = e.target as HTMLElement;
+    // Check if clicked element is a link
+    if (target.tagName === 'A') {
+      const href = target.getAttribute('href');
+      if (href && href.startsWith('/')) {
+        e.preventDefault();
+        const sectionId = href.replace('/', ''); // e.g. /contact -> contact
+        // Handle 'contact?type=...' by splitting query params if needed, but for now simple IDs
+        const cleanId = sectionId.split('?')[0]; 
+        
+        const element = document.getElementById(cleanId);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+          // Optional: Close chat on navigation? User might want to keep reading.
+          // setIsOpen(false); 
+        }
+      }
+    }
+  };
+
+  // Helper to parse simple markdown and return HTML
+  const parseContent = (text: string) => {
+    // 1. Handle Bold (**text**)
+    let html = text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-white font-semibold">$1</strong>');
+    
+    // 2. Handle Links is automatic if they are in HTML format in the source
+    // No extra processing needed for <a href="...">...</a>
+    
+    return { __html: html };
+  };
+
   return (
     <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans">
       {/* Chat Window */}
       {isOpen && (
-        <div className="mb-6 w-[90vw] sm:w-[440px] h-[650px] max-h-[80vh] bg-zinc-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
+        <div className="mb-6 w-[90vw] sm:w-[440px] h-[800px] max-h-[85vh] bg-zinc-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
           
           {/* Header */}
           <div className="p-5 border-b border-white/5 flex justify-between items-center bg-white/5 backdrop-blur-sm">
@@ -76,7 +116,10 @@ const ChatInterface = () => {
           </div>
 
           {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent">
+          <div 
+            className="flex-1 overflow-y-auto p-5 space-y-6 scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent"
+            onClick={handleContentClick} // Intercept clicks
+          >
             {messages.map((msg: Message) => (
               <div 
                 key={msg.id} 
@@ -90,16 +133,15 @@ const ChatInterface = () => {
                 </div>
                 
                 <div className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
-                  <div className={`text-[15px] leading-relaxed ${
-                    msg.role === 'user' 
-                      ? 'bg-zinc-800 text-zinc-100 px-5 py-3 rounded-2xl rounded-tr-sm shadow-lg' 
-                      : 'text-zinc-200 px-0 py-1 font-light' // Cleaner text for AI
-                  }`}>
-                    {/* Simple markdown parsing for bold text */}
-                    {msg.content.split('**').map((part, i) => 
-                      i % 2 === 1 ? <strong key={i} className="text-white font-semibold">{part}</strong> : part
-                    )}
-                  </div>
+                  <div 
+                    className={`text-[15px] leading-relaxed ${
+                      msg.role === 'user' 
+                        ? 'bg-zinc-800 text-zinc-100 px-5 py-3 rounded-2xl rounded-tr-sm shadow-lg' 
+                        : 'text-zinc-200 px-0 py-1 font-light' // Cleaner text for AI
+                    }`}
+                    // Use dangerouslySetInnerHTML for Rich Text support
+                    dangerouslySetInnerHTML={parseContent(msg.content)}
+                  />
                 </div>
               </div>
             ))}
