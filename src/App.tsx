@@ -6,8 +6,10 @@ import About from './components/features/about/About';
 import Footer from './components/layout/Footer';
 import ChatInterface from './components/features/chat/ChatInterface';
 import useIntersectionObserver from './hooks/useIntersectionObserver';
+import useExtensionDetector from './hooks/useExtensionDetector';
 
 const App = () => {
+  const { isDetected, extensionName } = useExtensionDetector();
   const [activeSection, setActiveSection] = useState('home');
 
   const heroRef = useRef<HTMLDivElement>(null);
@@ -23,6 +25,12 @@ const App = () => {
     else if (isProjectsVisible) setActiveSection('projects');
     else if (isAboutVisible) setActiveSection('about');
   }, [isHeroVisible, isProjectsVisible, isAboutVisible]);
+
+  useEffect(() => {
+    if (isDetected) {
+      console.warn(`[Security] Dark Mode Extension Detected & Neutralized: ${extensionName}`);
+    }
+  }, [isDetected, extensionName]);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);

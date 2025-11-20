@@ -35,10 +35,10 @@ const Contact = () => {
     <div id="contact" className="mt-12 md:mt-24 bg-zinc-900/30 border border-zinc-800 rounded-2xl p-6 md:p-12">
       <div className="text-center mb-10">
         <h3 className="text-2xl md:text-3xl font-bold mb-4 text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text">
-          Let's Build Something Meaningful
+          Let's create something that matters.
         </h3>
         <p className="text-zinc-400 max-w-2xl mx-auto">
-          Whether you want to discuss distributed systems, AI integration, or just say hi, I'm always open to a conversation.
+          Drop me a line.
         </p>
       </div>
 
