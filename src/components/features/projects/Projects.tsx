@@ -8,10 +8,10 @@ const Projects = () => {
       <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 to-zinc-900/50" />
       
       <div className="max-w-7xl mx-auto relative z-10">
-        <h2 className="text-6xl font-bold mb-6 text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+        <h2 className="text-4xl md:text-6xl font-bold mb-6 text-center bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
           Infrastructure Layers
         </h2>
-        <p className="text-zinc-400 text-center mb-16 text-xl">
+        <p className="text-zinc-400 text-center mb-16 text-lg md:text-xl">
           Systems engineered for <span className="text-blue-400">scale</span>, built for <span className="text-purple-400">impact</span>
         </p>
         

@@ -10,10 +10,13 @@ const Navigation = ({ activeSection, scrollToSection }: NavigationProps) => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/60 backdrop-blur-xl border-b border-zinc-700/50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-        <div className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+        {/* Logo */}
+        <div className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent z-50 relative">
           AM
         </div>
-        <div className="flex items-center gap-4 md:gap-8">
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex items-center gap-8">
           {['home', 'projects', 'about'].map((section) => (
             <button
               key={section}
@@ -30,6 +33,11 @@ const Navigation = ({ activeSection, scrollToSection }: NavigationProps) => {
           <div className="pl-4 border-l border-zinc-700/50">
             <AudioGenerator />
           </div>
+        </div>
+
+        {/* Mobile Audio Control (No Menu) */}
+        <div className="md:hidden z-50 relative">
+           <AudioGenerator />
         </div>
       </div>
     </nav>
