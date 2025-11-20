@@ -1,8 +1,8 @@
 import React, { useRef } from 'react';
-import useIntersectionObserver from '../hooks/useIntersectionObserver';
-import Bio from './about/Bio';
-import Skills from './about/Skills';
-import Contact from './about/Contact';
+import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
+import Bio from './Bio';
+import Skills from './Skills';
+import Contact from './Contact';
 
 const About = () => {
   const sectionRef = useRef<HTMLDivElement>(null);

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { MessageSquare, X, Send, Bot, User, Sparkles, ArrowUp } from 'lucide-react';
-import { useMockLLM, Message } from '../hooks/useMockLLM';
+import { useMockLLM, Message } from './useMockLLM';
 
 const ChatInterface = () => {
   const [isOpen, setIsOpen] = useState(() => {

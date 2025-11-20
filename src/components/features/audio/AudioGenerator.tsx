@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useAudioEngine } from '../hooks/useAudioEngine';
+import { useAudioEngine } from './useAudioEngine';
 import { Play, Pause, Volume2, Sparkles, Moon, Sun, Wind, Waves, Mountain, Cloud } from 'lucide-react';
 
 const SCENES = [
