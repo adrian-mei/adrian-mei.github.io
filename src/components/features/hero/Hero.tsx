@@ -23,9 +23,14 @@ const Hero = ({ scrollToSection }: HeroProps) => {
       
       {/* Bottom Section: Content */}
       <div className="relative z-10 text-center px-6 max-w-5xl mx-auto w-full">
-        <p className="text-xl md:text-4xl text-zinc-200 mb-6 font-light tracking-wide">
-          Infra. AI. Community.
-        </p>
+        <div className="mb-6 space-y-2">
+          <p className="text-xl md:text-4xl text-zinc-200 font-light tracking-wide">
+            Infra. AI. Community.
+          </p>
+          <p className="text-lg md:text-2xl text-zinc-500 font-light tracking-wider uppercase">
+            Based in San Francisco
+          </p>
+        </div>
         
         <p className="text-base md:text-xl text-zinc-400 max-w-3xl mx-auto mb-12 leading-relaxed">
           Building systems for <span className="text-blue-400 font-semibold">scale</span>. 
