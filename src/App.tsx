@@ -7,7 +7,7 @@ import Footer from './components/layout/Footer';
 import ChatInterface from './components/features/chat/ChatInterface';
 import useIntersectionObserver from './hooks/useIntersectionObserver';
 
-const Portfolio = () => {
+const App = () => {
   const [activeSection, setActiveSection] = useState('home');
 
   const heroRef = useRef<HTMLDivElement>(null);
@@ -49,4 +49,4 @@ const Portfolio = () => {
   );
 };
 
-export default Portfolio;
+export default App;

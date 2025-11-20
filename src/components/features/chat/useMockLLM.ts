@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { findBestMatch, FALLBACK_RESPONSE } from '../utils/chatLogic';
+import { findBestMatch, FALLBACK_RESPONSE } from './chatLogic';
 
 const STORAGE_KEYS = {
   MESSAGES: 'adrian_ai_messages',

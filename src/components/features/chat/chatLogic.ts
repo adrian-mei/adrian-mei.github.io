@@ -1,4 +1,4 @@
-import { KNOWLEDGE_BASE, KnowledgeTopic } from '../data/knowledgeBase';
+import { KNOWLEDGE_BASE, KnowledgeTopic } from '../../../data/knowledgeBase';
 
 interface ScoredTopic extends KnowledgeTopic {
   score: number;
