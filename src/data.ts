@@ -1,5 +1,5 @@
 // src/data.ts
-import { BookOpen, Compass, Dumbbell, Heart, Server, Cpu, Code2, Users } from 'lucide-react';
+import { BookOpen, Compass, Dumbbell, Heart, Server, Cpu, Code2, Users, Camera, Utensils } from 'lucide-react';
 
 export const projects = [
   {
@@ -48,7 +48,9 @@ export const skills = [
 
 export const interests = [
   { icon: Heart, label: 'Community Volunteering', color: 'text-red-400' },
-  { icon: Compass, label: 'Traveling', color: 'text-blue-400' },
-  { icon: Dumbbell, label: 'Boxing & Fitness', color: 'text-orange-400' },
+  { icon: Compass, label: 'Traveling & Moto', color: 'text-blue-400' },
+  { icon: Dumbbell, label: 'Boxing, Swim & Run', color: 'text-orange-400' },
+  { icon: Camera, label: 'Photo & Video', color: 'text-pink-400' },
+  { icon: Utensils, label: 'Culinary Arts', color: 'text-yellow-400' },
   { icon: BookOpen, label: 'Continuous Learning', color: 'text-purple-400' }
 ];
