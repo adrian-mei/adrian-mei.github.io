@@ -12,16 +12,16 @@ const About = () => {
     <section 
       id="about" 
       ref={sectionRef}
-      className="min-h-screen py-24 px-6 relative transition-colors duration-1000"
+      className="min-h-screen py-24 px-4 md:px-6 relative transition-colors duration-1000"
       style={{ 
         background: `linear-gradient(180deg, rgba(24, 24, 27, 0.5) 0%, rgba(16, 185, 129, ${isVisible ? '0.05' : '0'}) 100%)`
       }}
     >
       <div className="max-w-7xl mx-auto">
-        <h2 className="text-6xl font-bold mb-6 text-center bg-gradient-to-r from-blue-400 via-purple-500 to-emerald-400 bg-clip-text text-transparent">
+        <h2 className="text-4xl md:text-6xl font-bold mb-6 text-center bg-gradient-to-r from-blue-400 via-purple-500 to-emerald-400 bg-clip-text text-transparent">
           The Human Core
         </h2>
-        <p className="text-zinc-400 text-center mb-20 text-xl">
+        <p className="text-zinc-400 text-center mb-20 text-lg md:text-xl">
           Where engineering meets adventure
         </p>
         

@@ -91,13 +91,13 @@ const ChatInterface = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end font-sans">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end font-sans">
       {/* Chat Window */}
       {isOpen && (
-        <div className="mb-6 w-[90vw] sm:w-[440px] h-[800px] max-h-[85vh] bg-zinc-900/60 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300">
+        <div className="fixed inset-0 w-full h-[100dvh] sm:static sm:w-[440px] sm:h-[800px] sm:max-h-[85vh] sm:mb-6 bg-zinc-900/95 sm:bg-zinc-900/60 backdrop-blur-2xl sm:border border-white/10 rounded-none sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300 z-[60] sm:z-auto">
           
           {/* Header */}
-          <div className="p-5 border-b border-white/5 flex justify-between items-center bg-white/5 backdrop-blur-sm">
+          <div className="p-4 sm:p-5 border-b border-white/5 flex justify-between items-center bg-white/5 backdrop-blur-sm pt-safe-top">
             <div className="flex items-center gap-3">
               <div className="p-2 bg-white/10 rounded-xl ring-1 ring-white/5">
                 <Bot className="w-5 h-5 text-zinc-100" />
@@ -123,21 +123,21 @@ const ChatInterface = () => {
             {messages.map((msg: Message) => (
               <div 
                 key={msg.id} 
-                className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
+                className={`flex gap-4 animate-in slide-in-from-bottom-2 duration-300 fade-in ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}
               >
                 {/* Avatar */}
                 <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${
-                  msg.role === 'user' ? 'bg-transparent hidden' : 'bg-transparent' 
+                  msg.role === 'user' ? 'bg-transparent hidden' : 'bg-white/5 ring-1 ring-white/10' 
                 }`}>
-                   {msg.role === 'assistant' && <Bot className="w-6 h-6 text-zinc-400" />}
+                   {msg.role === 'assistant' && <Bot className="w-5 h-5 text-blue-400" />}
                 </div>
                 
                 <div className={`flex flex-col max-w-[85%] ${msg.role === 'user' ? 'items-end' : 'items-start'}`}>
                   <div 
-                    className={`text-[15px] leading-relaxed ${
+                    className={`text-[15px] leading-relaxed shadow-lg backdrop-blur-sm ${
                       msg.role === 'user' 
-                        ? 'bg-zinc-800 text-zinc-100 px-5 py-3 rounded-2xl rounded-tr-sm shadow-lg' 
-                        : 'text-zinc-200 px-0 py-1 font-light' // Cleaner text for AI
+                        ? 'bg-gradient-to-br from-blue-600 to-purple-600 text-white px-5 py-3 rounded-2xl rounded-tr-sm border border-white/10' 
+                        : 'bg-white/5 border border-white/5 text-zinc-100 px-5 py-3 rounded-2xl rounded-tl-sm' 
                     }`}
                     // Use dangerouslySetInnerHTML for Rich Text support
                     dangerouslySetInnerHTML={parseContent(msg.content)}
@@ -147,14 +147,14 @@ const ChatInterface = () => {
             ))}
             
             {isTyping && (
-              <div className="flex gap-4">
-                 <div className="flex-shrink-0 w-8 h-8 flex items-center justify-center">
-                  <Bot className="w-6 h-6 text-zinc-400" />
+              <div className="flex gap-4 animate-in slide-in-from-bottom-2 duration-300 fade-in">
+                 <div className="flex-shrink-0 w-8 h-8 rounded-full bg-white/5 ring-1 ring-white/10 flex items-center justify-center">
+                  <Bot className="w-5 h-5 text-blue-400 animate-pulse" />
                 </div>
-                <div className="flex items-center gap-1.5 h-8 px-2">
-                  <span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
-                  <span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
-                  <span className="w-1.5 h-1.5 bg-zinc-500 rounded-full animate-bounce"></span>
+                <div className="flex items-center gap-1.5 h-auto px-4 py-3 bg-white/5 border border-white/5 rounded-2xl rounded-tl-sm">
+                  <span className="w-1.5 h-1.5 bg-blue-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
+                  <span className="w-1.5 h-1.5 bg-purple-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
+                  <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce"></span>
                 </div>
               </div>
             )}
@@ -163,13 +163,15 @@ const ChatInterface = () => {
 
           {/* Suggested Prompts */}
           {!isTyping && (
-             <div className="px-5 pb-3 flex gap-2 overflow-x-auto scrollbar-hide mask-linear-fade">
+             <div className="px-5 pb-3 flex gap-2 overflow-x-auto scrollbar-hide mask-linear-fade pt-2">
                 {currentSuggestions.map((prompt: string, idx: number) => (
                   <button
                     key={idx}
                     onClick={() => sendMessage(prompt)}
-                    className="flex-shrink-0 text-xs font-medium px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/5 text-zinc-300 hover:text-white rounded-xl transition-all whitespace-nowrap backdrop-blur-md"
+                    className="group flex-shrink-0 flex items-center gap-2 text-xs font-medium px-4 py-2 bg-gradient-to-r from-indigo-500/10 to-purple-500/10 hover:from-indigo-500/20 hover:to-purple-500/20 border border-indigo-500/30 hover:border-indigo-400 text-indigo-200 hover:text-white rounded-xl transition-all whitespace-nowrap backdrop-blur-md hover:scale-105 active:scale-95 animate-in fade-in zoom-in duration-300 shadow-lg shadow-indigo-500/5 hover:shadow-indigo-500/20"
+                    style={{ animationDelay: `${idx * 100}ms` }}
                   >
+                    <Sparkles className="w-3 h-3 text-indigo-400 group-hover:text-indigo-300 group-hover:animate-spin-slow" />
                     {prompt}
                   </button>
                 ))}

@@ -137,7 +137,7 @@ export const AudioGenerator: React.FC = () => {
 
       {/* Dropdown Panel */}
       {isOpen && (
-        <div className="absolute top-full right-0 mt-4 w-72 sm:w-80 bg-zinc-900/95 backdrop-blur-xl border border-zinc-700/50 rounded-2xl shadow-2xl p-6 text-white transform transition-all animate-in fade-in slide-in-from-top-2 origin-top-right">
+        <div className="fixed top-20 right-4 left-4 md:absolute md:top-full md:right-0 md:left-auto md:mt-4 md:w-80 bg-zinc-900/95 backdrop-blur-xl border border-zinc-700/50 rounded-2xl shadow-2xl p-6 text-white transform transition-all animate-in fade-in slide-in-from-top-2 origin-top-right max-h-[80vh] overflow-y-auto scrollbar-hide">
           
           {/* Header */}
           <div className="flex justify-between items-start mb-6">

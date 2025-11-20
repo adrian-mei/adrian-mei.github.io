@@ -13,15 +13,15 @@ const Hero = ({ scrollToSection }: HeroProps) => {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/50 to-zinc-950 pointer-events-none md:hidden" />
       
       <div className="relative z-10 text-center px-6 max-w-5xl">
-        <h1 className="text-7xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-500 to-emerald-400 bg-clip-text text-transparent drop-shadow-2xl">
+        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold mb-6 bg-gradient-to-r from-blue-400 via-purple-500 to-emerald-400 bg-clip-text text-transparent drop-shadow-2xl">
           Adrian Mei
         </h1>
         
-        <p className="text-2xl md:text-4xl text-zinc-200 mb-6 font-light tracking-wide">
+        <p className="text-xl md:text-4xl text-zinc-200 mb-6 font-light tracking-wide">
           Infra. AI. Community.
         </p>
         
-        <p className="text-lg md:text-xl text-zinc-400 max-w-3xl mx-auto mb-12 leading-relaxed">
+        <p className="text-base md:text-xl text-zinc-400 max-w-3xl mx-auto mb-12 leading-relaxed">
           A Full-Stack Engineer bridging the gap between <span className="text-blue-400 font-semibold">cutting-edge technology</span> and <span className="text-emerald-400 font-semibold">social impact</span>. 
           Building scalable distributed systems by day, empowering communities by night.
         </p>
