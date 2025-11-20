@@ -1,4 +1,5 @@
 import React from 'react';
+import { AudioGenerator } from './AudioGenerator';
 
 interface NavigationProps {
   activeSection: string;
@@ -12,7 +13,7 @@ const Navigation = ({ activeSection, scrollToSection }: NavigationProps) => {
         <div className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
           AM
         </div>
-        <div className="flex gap-8">
+        <div className="flex items-center gap-4 md:gap-8">
           {['home', 'projects', 'about'].map((section) => (
             <button
               key={section}
@@ -26,6 +27,9 @@ const Navigation = ({ activeSection, scrollToSection }: NavigationProps) => {
               {section}
             </button>
           ))}
+          <div className="pl-4 border-l border-zinc-700/50">
+            <AudioGenerator />
+          </div>
         </div>
       </div>
     </nav>

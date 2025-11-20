@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAudioEngine } from '../hooks/useAudioEngine';
 import { Play, Pause, Volume2, Sparkles, Moon, Sun, Wind, Waves, Mountain, Cloud } from 'lucide-react';
 
@@ -79,6 +79,7 @@ export const AudioGenerator: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeSceneId, setActiveSceneId] = useState<string>('field');
   const [vol, setVol] = useState(0.1); // Match default in hook (Lowered)
+  const containerRef = useRef<HTMLDivElement>(null);
 
   // Initial Setup
   useEffect(() => {
@@ -91,6 +92,20 @@ export const AudioGenerator: React.FC = () => {
           droneFreq: 111
       });
   }, [updateParams]); // Only runs once essentially, or when engine rebinds
+
+  // Click Outside Handler
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleSceneSelect = (scene: typeof SCENES[0]) => {
       setActiveSceneId(scene.id);
@@ -106,22 +121,23 @@ export const AudioGenerator: React.FC = () => {
   const activeScene = SCENES.find(s => s.id === activeSceneId) || SCENES[0];
 
   return (
-    <div className="fixed bottom-8 right-8 z-50 font-sans">
-      {/* Toggle Button */}
+    <div className="relative z-50 font-sans" ref={containerRef}>
+      {/* Toggle Button - Header Style */}
       <button 
         onClick={() => setIsOpen(!isOpen)}
-        className={`p-4 rounded-full shadow-lg transition-all duration-500 ${
+        className={`p-2 rounded-full transition-all duration-300 flex items-center gap-2 ${
           isPlaying 
-            ? 'bg-indigo-500 shadow-indigo-500/50 animate-pulse ring-2 ring-indigo-400/50' 
-            : 'bg-zinc-800 hover:bg-zinc-700'
+            ? 'bg-indigo-500/10 text-indigo-400 ring-1 ring-indigo-500/50' 
+            : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800'
         }`}
+        title="Neuro-Audio Lab"
       >
-        <Sparkles className="w-6 h-6 text-white" />
+        <Sparkles className={`w-5 h-5 ${isPlaying ? 'animate-pulse' : ''}`} />
       </button>
 
-      {/* Panel */}
+      {/* Dropdown Panel */}
       {isOpen && (
-        <div className="absolute bottom-24 right-0 w-80 bg-zinc-900/95 backdrop-blur-xl border border-zinc-700/50 rounded-2xl shadow-2xl p-6 text-white transform transition-all animate-in fade-in slide-in-from-bottom-4 origin-bottom-right">
+        <div className="absolute top-full right-0 mt-4 w-72 sm:w-80 bg-zinc-900/95 backdrop-blur-xl border border-zinc-700/50 rounded-2xl shadow-2xl p-6 text-white transform transition-all animate-in fade-in slide-in-from-top-2 origin-top-right">
           
           {/* Header */}
           <div className="flex justify-between items-start mb-6">
@@ -150,11 +166,16 @@ export const AudioGenerator: React.FC = () => {
           </div>
           
           {/* Play/Visualizer */}
-          <div className="flex justify-center mb-8 relative">
-            {/* Pulse Animation Ring */}
+          <div className="flex justify-center mb-8 relative group">
+            {/* Ambient Glow */}
+            <div className={`absolute inset-0 rounded-full blur-xl transition-all duration-1000 ${
+                isPlaying ? 'opacity-40 bg-indigo-500/30 scale-150' : 'opacity-0 scale-100'
+            }`} />
+            
+            {/* Minimalist Ripple */}
             {isPlaying && (
                <div 
-                 className={`absolute inset-0 rounded-full border-2 opacity-50 ${activeScene.color.replace('text-', 'border-')}`}
+                 className="absolute inset-0 rounded-full border border-white/10 opacity-20"
                  style={{
                     animation: `ping ${4/activeScene.params.entrainmentFreq}s cubic-bezier(0, 0, 0.2, 1) infinite`
                  }}
@@ -163,16 +184,16 @@ export const AudioGenerator: React.FC = () => {
             
             <button
               onClick={togglePlay}
-              className={`w-20 h-20 rounded-full flex items-center justify-center transition-all duration-500 ${
+              className={`relative w-16 h-16 rounded-full flex items-center justify-center transition-all duration-500 ${
                 isPlaying 
-                  ? `bg-gradient-to-tr from-zinc-800 to-zinc-700 shadow-[0_0_30px_rgba(255,255,255,0.1)] scale-105 border border-white/10` 
-                  : 'bg-zinc-800 hover:bg-zinc-700 border border-zinc-700'
+                  ? 'bg-zinc-800 ring-1 ring-white/10 shadow-2xl shadow-indigo-500/10 scale-105' 
+                  : 'bg-zinc-800 hover:bg-zinc-750 ring-1 ring-white/5 hover:ring-white/10'
               }`}
             >
               {isPlaying ? (
-                  <Pause className={`w-8 h-8 ${activeScene.color}`} />
+                  <Pause className={`w-6 h-6 ${activeScene.color}`} />
               ) : (
-                  <Play className="w-8 h-8 ml-1 text-zinc-400" />
+                  <Play className="w-6 h-6 ml-1 text-zinc-400" />
               )}
             </button>
           </div>
