@@ -240,8 +240,8 @@ export const KNOWLEDGE_BASE: KnowledgeTopic[] = [
       "Tell me about your work",
       "What are your key projects?"
     ],
-    text: "I've worked on several key projects: **Scale-Ops Core** (Infrastructure), **Owly-Live** (Real-time events), **Dapr-LLM Agent** (AI), and **Kindly-Lab** (Social Good). Which one would you like to know more about?",
-    suggestions: ["Scale-Ops Core", "Owly-Live", "Dapr-LLM Agent", "Kindly-Lab"]
+    text: "I've worked on several key projects: **Scale-Ops Core** (Infrastructure), **Owly-Live** (Real-time events), **Aether** (Voice AI), and **Kindly-Lab** (Social Good). Which one would you like to know more about?",
+    suggestions: ["Scale-Ops Core", "Owly-Live", "Aether", "Kindly-Lab"]
   },
   {
     id: 'project_scaleops',
@@ -253,7 +253,7 @@ export const KNOWLEDGE_BASE: KnowledgeTopic[] = [
       "What is your experience with AWS?",
       "Tell me about the migration"
     ],
-    text: "With **Scale-Ops Core**, Adrian didn't just migrate servers; he transformed the engineering culture. By architecting a **GitOps-driven EKS ecosystem**, he replaced manual firefighting with automated precision. It wasn't about the tools—it was about creating a **resilient foundation** that allowed the team to ship fearlessly for years to come.",
+    text: "With **Scale-Ops Core**, Adrian was a key part of a multi-year transformation. He collaborated on the shift to a **GitOps-driven EKS ecosystem**, helping the team replace manual firefighting with automated precision. It was about contributing to a **resilient foundation** that allows the organization to ship fearlessly.",
     suggestions: ["What tech stack?", "Other Projects", "Backend Skills"]
   },
   {
@@ -270,16 +270,16 @@ export const KNOWLEDGE_BASE: KnowledgeTopic[] = [
     suggestions: ["See Dapr-LLM", "Frontend Skills", "Philosophy"]
   },
   {
-    id: 'project_dapr',
-    keywords: ['dapr', 'dapr-llm', 'llm', 'ai', 'agent', 'python', 'bot', 'intelligence', 'machine learning', 'gpt'],
+    id: 'project_aether',
+    keywords: ['aether', 'voice', 'ai', 'companion', 'empathy', 'llm', 'agent', 'intelligence', 'machine learning', 'gpt'],
     triggers: [
-      "Tell me about Dapr-LLM Agent",
+      "Tell me about Aether",
       "What is your experience with AI?",
       "How do you build AI agents?",
-      "Tell me about the Python bot",
-      "What is Dapr?"
+      "Tell me about the voice bot",
+      "What is Aether?"
     ],
-    text: "The **Dapr-LLM Agent** is Adrian's foray into the future of backend logic. He engineered a prototype using **Python** and **Dapr's Conversation API** to create state-aware AI agents. These agents can handle complex customer service queries with context retention, bridging the gap between static code and dynamic, human-like intelligence.",
+    text: "**Aether** is a voice-first empathetic AI companion. It bridges the gap between static backends and generative AI, listening actively and tracking mood to transform simple queries into intelligent, emotional conversations.",
     suggestions: ["What about Owly-Live?", "Tech Stack", "Contact"]
   },
   {

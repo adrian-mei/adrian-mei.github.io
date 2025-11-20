@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { projects } from '../../../data';
 import ProjectCard from './ProjectCard';
+import ProjectModal from './ProjectModal';
 
 const Projects = () => {
+  const [selectedProject, setSelectedProject] = useState<typeof projects[0] | null>(null);
+
   return (
     <section id="projects" className="min-h-screen py-24 px-6 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-zinc-950 to-zinc-900/50" />
@@ -17,10 +20,20 @@ const Projects = () => {
         
         <div className="grid md:grid-cols-2 gap-8" style={{ perspective: '1000px' }}>
           {projects.map((project, index) => (
-            <ProjectCard key={index} {...project} />
+            <ProjectCard 
+              key={index} 
+              {...project} 
+              onClick={() => setSelectedProject(project)}
+            />
           ))}
         </div>
       </div>
+      
+      <ProjectModal 
+        isOpen={!!selectedProject} 
+        onClose={() => setSelectedProject(null)} 
+        project={selectedProject} 
+      />
     </section>
   );
 };
