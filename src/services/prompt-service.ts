@@ -1,6 +1,18 @@
 import { personal, projects, skills, interests } from '../data/portfolio';
+import { blogPosts } from '../data/blog';
 
 export function generateSystemPrompt(): string {
+  const blogContext = blogPosts.map(post => {
+    // Simple HTML strip for the prompt context
+    const cleanContent = post.content.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    return `
+### ${post.title} (${post.date})
+- **Topics:** ${post.tags.join(", ")}
+- **Summary:** ${post.excerpt}
+- **Core Thoughts:** ${cleanContent}
+    `;
+  }).join("\n");
+
   const projectsContext = projects.map(p => {
     const details = p.details ? p.details.map((d: any) => {
       if (typeof d === 'string') return d;
@@ -58,6 +70,9 @@ ${skillsContext}
 
 #### INTERESTS
 ${interestsContext}
+
+#### MINDSET & WRITING (BLOG)
+${blogContext}
 
 ### GUIDELINES
 1. **Brevity is King (STRICT):** Responses must be under 60 words. Avoid walls of text.
