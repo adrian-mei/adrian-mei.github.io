@@ -45,6 +45,7 @@ export const projects = [
     description: "A voice-first empathetic AI companion that listens actively and tracks mood. Bridged the gap between static backends and generative AI, transforming simple queries into intelligent, emotional conversations.",
     techStack: ["Next.js", "React", "Vercel AI SDK", "Google Gemini", "Web Speech API"],
     impact: "🤖 Empathetic Voice AI",
+    link: "https://aether-beige.vercel.app/",
     details: [
       {
         type: 'header' as const,
