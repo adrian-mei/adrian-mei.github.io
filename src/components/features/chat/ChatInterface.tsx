@@ -62,7 +62,7 @@ const ChatInterface = () => {
     <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-end font-sans">
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed inset-0 w-full h-[100dvh] sm:static sm:w-[440px] sm:h-[800px] sm:max-h-[85vh] sm:mb-6 bg-zinc-900/95 sm:bg-zinc-900/60 backdrop-blur-2xl sm:border border-white/10 rounded-none sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300 z-[60] sm:z-auto">
+        <div className="fixed inset-0 w-full h-[100dvh] sm:static sm:w-[600px] sm:h-[800px] sm:max-h-[85vh] sm:mb-6 bg-zinc-900/95 sm:bg-zinc-900/40 backdrop-blur-2xl sm:border border-white/10 rounded-none sm:rounded-3xl shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-10 fade-in duration-300 z-[60] sm:z-auto">
           
           {/* Header */}
           <div className="p-4 sm:p-5 border-b border-white/5 flex justify-between items-center bg-white/5 backdrop-blur-sm pt-safe-top">
