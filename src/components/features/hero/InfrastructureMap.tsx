@@ -24,11 +24,15 @@ const createStarTexture = () => {
 const InfrastructureMap = () => {
   const mountRef = useRef<HTMLDivElement>(null);
   const mouseRef = useRef({ x: 0, y: 0 });
-  const [isDesktop, setIsDesktop] = useState(window.innerWidth > 768);
+  // Initialize with false to prevent hydration mismatch/SSR errors
+  const [isDesktop, setIsDesktop] = useState(false);
   const isVisible = useIntersectionObserver(mountRef, { threshold: 0.1 });
   const animationFrameId = useRef<number>();
 
   useEffect(() => {
+    // Check initial size on mount
+    setIsDesktop(window.innerWidth > 768);
+
     const handleResize = () => {
       setIsDesktop(window.innerWidth > 768);
     };

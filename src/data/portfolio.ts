@@ -1,5 +1,18 @@
-// src/data.ts
+// src/data/portfolio.ts
 import { BookOpen, Compass, Dumbbell, Heart, Server, Cpu, Code2, Users, Camera, Utensils } from 'lucide-react';
+
+export const personal = {
+  name: "Adrian Mei",
+  role: "Senior Software Engineer",
+  location: "San Francisco",
+  about: "I'm a software engineer who thrives on making an impact in small startup environments. Outside of work, you can find me running, camping, hiking, or boxing. I'm passionate about community and actively volunteer with a nonprofit helping immigrant-owned small businesses in San Francisco. I'm always learning—whether it's taking classes at CCSF or teaching myself how to cook.",
+  currentFocus: "Agentic AI patterns",
+  funFact: "I once fixed a server while camping. I enjoy going outdoor with hotspot where I can hike and camp, cook delicious food and enjoy mountains and lakes. all that and I can code while doing it.",
+  vibe: {
+    tone: "Enthusiastic and tech-savvy",
+    audienceAdjustment: "Ask who I am speaking with (Recruiters, Founders, Engineers, Friends). Pivot to technical depth for engineers and high-level impact for recruiters."
+  }
+};
 
 export const projects = [
   {
@@ -17,7 +30,8 @@ export const projects = [
       "Beyond backend systems, I bridged the gap to data science. I engineered pipelines to unify voice and email data for auditability and built the internal tooling that accelerated ML model training. It was about giving our data scientists the velocity they needed to innovate."
     ],
     techStack: ["Scala", "Kubernetes", "AWS EKS", "Terraform", "ArgoCD"],
-    impact: "🚀 Zero-downtime Migration"
+    impact: "🚀 Zero-downtime Migration",
+    story: "A few months into my first role, we were tasked with breaking a huge analytics module out of a monolith into its own microservice. I was excited—until I realized the module had literally hundreds of hidden dependencies scattered across the codebase. One service was calling another indirectly through a cache layer, which itself triggered batch jobs that mutated the DB in unexpected ways. The real chaos hit during testing: our microservice was passing all unit tests, but integration tests started failing in bizarre ways. Reports weren't generating, dashboards were empty, and errors were popping in services we didn't even touch. I spent days tracing events through Kafka, Redis, and database triggers, learning to read logs like a detective reads crime scenes. Eventually, we introduced feature flags, added observability, and decoupled the dependencies step by step. The module finally ran independently—and fast. That experience hammered home the lesson that splitting a monolith isn't just refactoring code, it's untangling a living, breathing system."
   },
   {
     // ARTIFICIAL INTELLIGENCE (The "Future" Hook)
@@ -180,7 +194,8 @@ Before responding, perform this internal check:
     description: "Leading the charge to bridge the digital divide. We build custom web solutions for immigrant-owned businesses, empowering 15+ entrepreneurs to thrive in the digital economy.",
     techStack: ["React", "Python", "PostgreSQL", "Mentorship", "Volunteering"],
     impact: "💚 Empowered 15+ Businesses",
-    link: "https://www.kindly-labs.org/"
+    link: "https://www.kindly-labs.org/",
+    motivation: "I grew up in an immigrant family—my parents worked multiple part-time jobs, seven days a week. I see the same hustle in local immigrant-owned businesses: owners wearing every hat, too busy to keep up with the world. Meanwhile, AI hype is booming, but it mostly benefits those in tech bubbles. I'm passionate about bringing tools to these businesses so they can step out of the grind and compete on a level playing field."
   },
   {
     // FULL STACK / REAL TIME (The "Builder" Hook)

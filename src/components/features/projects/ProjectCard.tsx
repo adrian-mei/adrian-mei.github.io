@@ -15,6 +15,9 @@ const ProjectCard = ({ title, tagline, description, techStack, impact, link, onC
   return (
     <div
       onClick={onClick}
+      role={onClick ? "button" : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      aria-label={onClick ? `View details for ${title}` : undefined}
       className={`relative bg-zinc-900/40 backdrop-blur-xl rounded-xl p-6 border border-zinc-700/50 hover:border-blue-500/50 transition-all duration-300 group hover:-translate-y-2 hover:shadow-2xl hover:shadow-blue-500/20 ${onClick ? 'cursor-pointer' : ''}`}
     >
       <div className="flex items-start justify-between mb-3">
@@ -38,6 +41,7 @@ const ProjectCard = ({ title, tagline, description, techStack, impact, link, onC
             href={link} 
             target="_blank" 
             rel="noopener noreferrer"
+            aria-label={`Visit ${title} (External Link)`}
             className="p-1 hover:bg-white/5 rounded-full transition-colors"
             onClick={(e) => e.stopPropagation()}
           >

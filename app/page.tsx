@@ -1,14 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
-import Navigation from './components/layout/Navigation';
-import Hero from './components/features/hero/Hero';
-import Projects from './components/features/projects/Projects';
-import About from './components/features/about/About';
-import Footer from './components/layout/Footer';
-import ChatInterface from './components/features/chat/ChatInterface';
-import useIntersectionObserver from './hooks/useIntersectionObserver';
-import useExtensionDetector from './hooks/useExtensionDetector';
+"use client";
 
-const App = () => {
+import React, { useState, useRef, useEffect } from 'react';
+import Navigation from '../src/components/layout/Navigation';
+import Hero from '../src/components/features/hero/Hero';
+import Projects from '../src/components/features/projects/Projects';
+import About from '../src/components/features/about/About';
+import Footer from '../src/components/layout/Footer';
+import ChatInterface from '../src/components/features/chat/ChatInterface';
+import ErrorBoundary from '../src/components/ErrorBoundary';
+import useIntersectionObserver from '../src/hooks/useIntersectionObserver';
+import useExtensionDetector from '../src/hooks/useExtensionDetector';
+
+const Home = () => {
   const { isDetected, extensionName } = useExtensionDetector();
   const [activeSection, setActiveSection] = useState('home');
 
@@ -52,9 +55,11 @@ const App = () => {
         </div>
       </main>
       <Footer />
-      <ChatInterface />
+      <ErrorBoundary>
+        <ChatInterface />
+      </ErrorBoundary>
     </div>
   );
 };
 
-export default App;
+export default Home;

@@ -17,9 +17,10 @@ node_modules/
 # ---------------------------
 # Build artifacts
 # ---------------------------
+.next/
+out/
 dist/
-dist-ssr/
-.vite/
+next-env.d.ts
 
 # ---------------------------
 # Environment variables
@@ -54,3 +55,11 @@ dist-ssr/
 # ---------------------------
 coverage/
 *.lcov
+
+# ---------------------------
+# Netlify
+# ---------------------------
+.netlify/
+
+# Local Netlify folder
+.netlify
