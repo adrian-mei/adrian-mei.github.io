@@ -1,16 +1,62 @@
-# React + Vite
+# Adrian Mei - Personal Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A modern, interactive personal portfolio website featuring a 3D infrastructure map, procedurally generated audio, and an AI-powered concierge.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+-   **Framework:** Next.js (App Router)
+-   **Language:** TypeScript
+-   **Styling:** Tailwind CSS
+-   **3D Visualization:** Three.js
+-   **AI:** Google Gemini (via Vercel AI SDK)
+-   **Deployment:** Netlify / Vercel
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+-   **AI Concierge:** A "Live" AI chatbot (Aether) that can answer questions about my skills and experience.
+-   **Infrastructure Map:** Interactive 3D visualization of my technical skills.
+-   **Audio Engine:** Procedural audio generation using Web Audio API.
+-   **Responsive Design:** Mobile-first architecture using Tailwind CSS.
 
-## Expanding the ESLint configuration
+## Development
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+
+-   Node.js (v18+)
+
+### Setup
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/adrian-mei/adrian-mei.github.io.git
+    cd adrian-mei.github.io
+    ```
+
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    ```
+
+3.  **Environment Variables:**
+    Create a `.env.local` file in the root directory and add your Google Gemini API key:
+    ```env
+    GOOGLE_GENERATIVE_AI_API_KEY=your_api_key_here
+    ```
+
+4.  **Run Development Server:**
+    ```bash
+    npm run dev
+    ```
+    The site will be available at `http://localhost:3000`.
+
+## Architecture
+
+-   **App:** Located in `app/`. Uses Next.js App Router.
+-   **Components:** Located in `src/components/`.
+-   **API:** Located in `app/api/`. Handles server-side logic and AI integration.
+
+## Scripts
+
+-   `npm run dev`: Starts the Next.js development server.
+-   `npm run build`: Builds the project for production.
+-   `npm run lint`: Runs Next.js Lint.

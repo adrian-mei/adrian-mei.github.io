@@ -106,7 +106,9 @@ export const AudioGenerator: React.FC = () => {
     <div className="relative z-50 font-sans" ref={containerRef}>
       {/* Toggle Button */}
       <button 
+        id="audio-toggle-btn"
         onClick={() => setIsOpen(!isOpen)}
+        aria-label="Toggle Sonic Atmosphere"
         className={`p-2 rounded-full transition-all duration-300 flex items-center gap-2 ${
           isPlaying 
             ? 'bg-indigo-500/10 text-indigo-400 ring-1 ring-indigo-500/50' 
@@ -128,6 +130,7 @@ export const AudioGenerator: React.FC = () => {
               Sonic Atmosphere
             </h3>
             <button 
+                id="audio-panel-close-btn"
                 onClick={() => setIsOpen(false)}
                 className="text-zinc-500 hover:text-white transition-colors"
             >
@@ -151,7 +154,9 @@ export const AudioGenerator: React.FC = () => {
                 )}
                 
                 <button
+                    id="audio-play-pause-btn"
                     onClick={togglePlay}
+                    aria-label={isPlaying ? "Pause Audio" : "Play Audio"}
                     className="relative z-10 w-full h-full flex items-center justify-center rounded-full hover:bg-zinc-700 transition-colors"
                 >
                     {isPlaying ? (
