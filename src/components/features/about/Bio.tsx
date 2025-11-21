@@ -10,7 +10,7 @@ const Bio = () => {
       
       <div className="text-zinc-400 space-y-6 leading-relaxed text-lg">
         <p>
-          I build <strong className="text-blue-400">digital backbones</strong> to support real <strong className="text-purple-400">human connection</strong>.
+          Based in <strong className="text-emerald-400">San Francisco</strong>, I build <strong className="text-blue-400">digital backbones</strong> to support real <strong className="text-purple-400">human connection</strong>.
         </p>
         <p>
           Smart engineering isn't just about code. It's about solving problems for people.
