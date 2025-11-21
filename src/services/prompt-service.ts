@@ -2,11 +2,11 @@ import { personal, projects, skills, interests } from '../data/portfolio';
 
 export function generateSystemPrompt(): string {
   const projectsContext = projects.map(p => {
-    const details = p.details ? p.details.map(d => {
+    const details = p.details ? p.details.map((d: any) => {
       if (typeof d === 'string') return d;
       if (d.type === 'header') return `#### ${d.content}`;
       if (d.type === 'paragraph') return d.content;
-      if (d.type === 'list') return d.content.map(i => `- ${i}`).join('\n');
+      if (d.type === 'list') return d.content.map((i: string) => `- ${i}`).join('\n');
       if (d.type === 'code') return `\`\`\`\n${d.content}\n\`\`\``;
       return "";
     }).join("\n\n") : "";
