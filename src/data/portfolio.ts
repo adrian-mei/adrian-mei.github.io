@@ -11,6 +11,11 @@ export const personal = {
   vibe: {
     tone: "Enthusiastic and tech-savvy",
     audienceAdjustment: "Ask who I am speaking with (Recruiters, Founders, Engineers, Friends). Pivot to technical depth for engineers and high-level impact for recruiters."
+  },
+  hero: {
+    tagline: "Infra. AI. Community.",
+    description: "Building systems for scale. Cultivating community for impact. Living for the moments in between.",
+    primaryAction: "Explore My Work"
   }
 };
 

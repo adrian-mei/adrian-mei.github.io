@@ -3,6 +3,11 @@
 
 const isDev = process.env.NODE_ENV === 'development';
 
+// Master Toggle for Logging
+// Set to true to enable console logging and server-side shipping (for non-errors).
+// Errors are ALWAYS logged.
+export const ENABLE_LOGGING = false;
+
 export type LogEventCategory = 'ACTION' | 'API' | 'NAVIGATION' | 'CHAT' | 'SYSTEM';
 
 interface LogEntry {
@@ -13,6 +18,11 @@ interface LogEntry {
 }
 
 const log = (level: 'debug' | 'info' | 'warn' | 'error', msg: string, data?: object) => {
+  // 1. Filtering: Skip non-errors if logging is disabled
+  if (level !== 'error' && !ENABLE_LOGGING) {
+    return;
+  }
+
   const timestamp = new Date().toISOString();
   const entry: LogEntry = {
     level,
@@ -21,6 +31,7 @@ const log = (level: 'debug' | 'info' | 'warn' | 'error', msg: string, data?: obj
     ...data,
   };
 
+  // 2. Console Output
   if (isDev) {
     // In dev, print readable logs
     const color = level === 'error' ? '\x1b[31m' : level === 'warn' ? '\x1b[33m' : '\x1b[32m';
@@ -31,8 +42,9 @@ const log = (level: 'debug' | 'info' | 'warn' | 'error', msg: string, data?: obj
     console[level](JSON.stringify(entry));
   }
 
-  // Forward client-side logs to server terminal via API
-  if (typeof window !== 'undefined') {
+  // 3. Server Shipping (Client-side only)
+  // Only if enabled (or if it's an error) and running in the browser
+  if (typeof window !== 'undefined' && (ENABLE_LOGGING || level === 'error')) {
     // Fire and forget log ingestion
     fetch('/api/log', {
       method: 'POST',
