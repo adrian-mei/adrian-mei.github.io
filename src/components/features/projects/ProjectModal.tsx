@@ -1,6 +1,13 @@
 import React, { useEffect } from 'react';
 import { X, Calendar, Building2, User } from 'lucide-react';
 
+export type ProjectDetailItem = 
+  | string 
+  | { type: 'header'; content: string }
+  | { type: 'paragraph'; content: string }
+  | { type: 'code'; content: string; language?: string }
+  | { type: 'list'; content: string[] };
+
 interface ProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -11,7 +18,7 @@ interface ProjectModalProps {
     role?: string;
     company?: string;
     timeline?: string;
-    details?: string[];
+    details?: ProjectDetailItem[];
     techStack: string[];
     impact: string;
     link?: string;
@@ -123,11 +130,49 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
               <div className="mt-8 border-t border-zinc-800 pt-8">
                 <h3 className="text-xl font-bold text-white mb-6">The Story</h3>
                 <div className="space-y-6">
-                  {project.details.map((detail, i) => (
-                    <p key={i} className="text-zinc-300 leading-relaxed text-lg">
-                      {detail}
-                    </p>
-                  ))}
+                  {project.details.map((detail, i) => {
+                    if (typeof detail === 'string') {
+                      return (
+                        <p key={i} className="text-zinc-300 leading-relaxed text-lg">
+                          {detail}
+                        </p>
+                      );
+                    }
+
+                    switch (detail.type) {
+                      case 'header':
+                        return (
+                          <h4 key={i} className="text-xl font-bold text-zinc-100 mt-8 mb-4">
+                            {detail.content}
+                          </h4>
+                        );
+                      case 'code':
+                        return (
+                          <div key={i} className="bg-black/50 rounded-lg p-4 border border-zinc-800 overflow-x-auto my-4">
+                            <pre className="font-mono text-sm text-blue-300">
+                              {detail.content}
+                            </pre>
+                          </div>
+                        );
+                      case 'list':
+                        return (
+                          <ul key={i} className="list-disc list-inside space-y-2 text-zinc-300 text-lg ml-4">
+                            {(detail.content as string[]).map((item, j) => (
+                              <li key={j} className="leading-relaxed">
+                                <span className="text-zinc-300">{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        );
+                      case 'paragraph':
+                      default:
+                        return (
+                          <p key={i} className="text-zinc-300 leading-relaxed text-lg">
+                            {detail.content as string}
+                          </p>
+                        );
+                    }
+                  })}
                 </div>
               </div>
             )}
