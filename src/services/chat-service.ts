@@ -1,8 +1,10 @@
 import { logger } from '@/src/services/logger';
 
 export interface ChatMessage {
-  role: 'user' | 'assistant';
+  id?: string;
+  role: 'user' | 'assistant' | 'system' | 'data' | 'tool';
   content: string;
+  createdAt?: Date;
 }
 
 /**
