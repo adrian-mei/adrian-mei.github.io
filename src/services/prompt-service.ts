@@ -1,7 +1,17 @@
 import { personal, projects, skills, interests } from '../data/portfolio';
 
 export function generateSystemPrompt(): string {
-  const projectsContext = projects.map(p => `
+  const projectsContext = projects.map(p => {
+    const details = p.details ? p.details.map(d => {
+      if (typeof d === 'string') return d;
+      if (d.type === 'header') return `#### ${d.content}`;
+      if (d.type === 'paragraph') return d.content;
+      if (d.type === 'list') return d.content.map(i => `- ${i}`).join('\n');
+      if (d.type === 'code') return `\`\`\`\n${d.content}\n\`\`\``;
+      return "";
+    }).join("\n\n") : "";
+
+    return `
 ### ${p.title} (${p.tagline})
 - **Role:** ${p.role || "Creator/Lead"}
 - **Tech Stack:** ${p.techStack.join(", ")}
@@ -9,7 +19,9 @@ export function generateSystemPrompt(): string {
 - **Key Impact:** ${p.impact}
 ${p.story ? `- **The Inside Story:** ${p.story}` : ""}
 ${(p as any).motivation ? `- **Why He Built It:** ${(p as any).motivation}` : ""}
-  `).join("\n");
+${details ? `\n**Technical Details & Decisions:**\n${details}` : ""}
+  `;
+  }).join("\n");
 
   const skillsContext = skills.map(s => `- ${s.name} (${s.category})`).join("\n");
   const interestsContext = interests.map(i => `- ${i.label}`).join("\n");

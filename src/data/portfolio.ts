@@ -189,6 +189,40 @@ Before responding, perform this internal check:
           'The Advice Trap: Say "I have a headache." Aether should respond: "Headaches can be so draining. It sounds like your body is asking for a break."',
           'The Robot Trap: Say "Who are you?" Aether should respond: "I\'m Aether. I\'m just a listener here with you."'
         ]
+      },
+      {
+        type: 'header' as const,
+        content: '6. Decision: Real-Time Voice Synthesis Strategy'
+      },
+      {
+        type: 'paragraph' as const,
+        content: 'Aether requires a voice interaction experience that feels natural and conversational. The target Time-To-First-Audio (TTFA) is under 2.0 seconds (ideally <1.0s) to avoid the "robotic pause".'
+      },
+      {
+        type: 'header' as const,
+        content: 'The Solution: WebGPU + Sentence-Level Streaming'
+      },
+      {
+        type: 'list' as const,
+        content: [
+          'Engine: kokoro-js running on onnxruntime-web with the WebGPU backend.',
+          'Pipeline: Sentence-level streaming from LLM -> Session Manager -> TTS Worker.',
+          'Model: fp32 precision Kokoro-82M ONNX model.'
+        ]
+      },
+      {
+        type: 'header' as const,
+        content: 'Key Rationale'
+      },
+      {
+        type: 'list' as const,
+        content: [
+          'WebGPU vs WASM: WASM inference was ~1.2s/sentence. WebGPU dropped this to ~80-150ms, eliminating the generation bottleneck.',
+          'Sentence-Streaming: We buffer text chunks until a sentence is complete, then immediately generate audio. TTFA drops to ~500ms.',
+          'Precision (fp32 vs int8): Quantized q8 models caused audio artifacts on WebGPU. We stuck with fp32 (~300MB) for stability, using browser caching to mitigate download size.',
+          'Buffer Management: We explicitly copy audio buffers before transferring from the worker to prevent memory heap detachment issues.',
+          'UI Continuity: The useVoiceAgent hook maintains "speaking" state during micro-pauses between sentences to prevent UI flickering.'
+        ]
       }
     ]
   },
