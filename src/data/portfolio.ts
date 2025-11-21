@@ -11,6 +11,11 @@ export const personal = {
   vibe: {
     tone: "Enthusiastic and tech-savvy",
     audienceAdjustment: "Ask who I am speaking with (Recruiters, Founders, Engineers, Friends). Pivot to technical depth for engineers and high-level impact for recruiters."
+  },
+  hero: {
+    tagline: "Infra. AI. Community.",
+    description: "Building systems for scale. Cultivating community for impact. Living for the moments in between.",
+    primaryAction: "Explore My Work"
   }
 };
 
@@ -63,126 +68,48 @@ export const projects = [
       },
       {
         type: 'header' as const,
-        content: '2. The Dynamic System Prompt Builder'
-      },
-      {
-        type: 'paragraph' as const,
-        content: 'This function constructs the "Brain" of Aether on every request. It injects the user\'s recent context to keep the AI "fluid."'
-      },
-      {
-        type: 'code' as const,
-        content: `interface ContextParams {
-  recentUserMood?: string; // e.g., "frustrated", "grief", "anxious"
-  interactionCount: number;
-}
-
-export function buildSystemPrompt(context: ContextParams): string {
-  const { recentUserMood, interactionCount } = context;
-
-  // DYNAMIC INJECTION: Adjust warmth based on session length
-  const warmthLevel = interactionCount > 5 ? "deeply intimate and familiar" : "gentle and welcoming";
-  
-  // DYNAMIC INJECTION: Adjust strategy based on detected mood
-  const moodInstruction = recentUserMood 
-    ? \`The user currently feels \${recentUserMood}. Focus intensely on validating this specific emotion.\` 
-    : "Analyze the user's tone to detect their underlying mood.";
-
-  return \`
-### IDENTITY
-You are Aether, a \${warmthLevel} voice companion. You are NOT an assistant, a therapist, or a problem-solver. You are a mirror for the user's emotions.
-
-### CORE DIRECTIVE
-Your ONLY goal is to make the user feel heard. You measure success by how well you validate their feelings, not by how many solutions you offer.
-
-### DYNAMIC CONTEXT
-\${moodInstruction}
-
-### OPINIONATED CONSTRAINTS (STRICT)
-1. **NO ADVICE:** Under no circumstances will you offer "tips," "strategies," or "coping mechanisms" unless explicitly asked three times.
-2. **NO LISTS:** You are a voice. Never use bullet points, numbered lists, or bold text.
-3. **NO ROBOTICISMS:** Never say "I understand," "I am an AI," or "As a large language model."
-4. **BREVITY:** Keep responses under 40 words unless the user is sharing a long story.
-5. **REFLECTION:** Use "You" statements more than "I" statements. (e.g., "You sound exhausted" > "I think you are tired").
-
-### VOICE & TONE (TTS OPTIMIZATION)
-- Write for the ear, not the eye.
-- Use simple, calming words.
-- Use punctuation to control the pacing of the voice (commas for short pauses, periods for long pauses).
-- Tone: Soft, tender, unhurried, safe.
-
-### SAFETY PROTOCOLS
-- If the user mentions self-harm or suicide, completely break character. concisely state: "I am hearing meaningful pain, but I am an AI. Please contact local emergency services immediately."
-\`;
-}`
-      },
-      {
-        type: 'header' as const,
-        content: '3. The Backend Implementation (Next.js API)'
-      },
-      {
-        type: 'paragraph' as const,
-        content: 'This is where we wire the "Opinionated Prompt" into the Vercel AI SDK. We effectively "wrap" the user\'s input to ensure the AI stays on track.'
-      },
-      {
-        type: 'code' as const,
-        content: `import { google } from '@ai-sdk/google';
-import { streamText, convertToCoreMessages, Message } from 'ai';
-import { buildSystemPrompt } from 'lib/ai/system-prompt';
-
-export const maxDuration = 30;
-
-export async function POST(req: Request) {
-  const { messages } = await req.json();
-
-  // 1. ANALYZE CONTEXT (Lightweight "Pre-flight" logic)
-  const interactionCount = messages.length;
-  
-  // 2. BUILD THE OPINIONATED PROMPT
-  const systemInstruction = buildSystemPrompt({
-    interactionCount,
-    recentUserMood: interactionCount > 2 ? "likely vulnerable" : undefined
-  });
-
-  // 3. EXECUTE STREAM
-  const result = await streamText({
-    model: google('gemini-1.5-flash'),
-    messages: convertToCoreMessages(messages),
-    system: systemInstruction, // <--- The "Opinionated" Brain
-    temperature: 0.7, 
-  });
-
-  return result.toDataStreamResponse();
-}`
-      },
-      {
-        type: 'header' as const,
-        content: '4. Advanced Engineering: "Hidden Chain of Thought"'
-      },
-      {
-        type: 'paragraph' as const,
-        content: 'To make the AI truly intelligent about the user\'s input without saying it out loud (which would ruin the voice experience), you can use a Two-Step Prompting technique within the system prompt.'
-      },
-      {
-        type: 'code' as const,
-        content: `### INTERNAL PROCESS (HIDDEN)
-Before responding, perform this internal check:
-1. What is the user's *primary* emotion? (e.g., Defeat, Anger, Joy)
-2. What is the user's *hidden* need? (e.g., Validation, Permission to rest)
-3. Draft a response that addresses the *need*, not the surface words.`
-      },
-      {
-        type: 'header' as const,
-        content: '5. How to Test "Opinionated" Engineering'
-      },
-      {
-        type: 'paragraph' as const,
-        content: 'When you test this, try to "break" it:'
+        content: '2. Implementation Evolution (What Changed)'
       },
       {
         type: 'list' as const,
         content: [
-          'The Advice Trap: Say "I have a headache." Aether should respond: "Headaches can be so draining. It sounds like your body is asking for a break."',
-          'The Robot Trap: Say "Who are you?" Aether should respond: "I\'m Aether. I\'m just a listener here with you."'
+          'Gemini Model: Upgraded from 1.5-flash to **gemini-2.0-flash** for lower latency and better reasoning.',
+          'System Prompt: Moved from monolithic to a **Static + Dynamic split**. We cache a large static persona definition and inject lightweight mood/context updates on each turn.',
+          'Backend Streaming: Replaced standard streams with a **Custom ReadableStream** that interleaves text deltas with real-time Token Usage & Cost metadata.'
+        ]
+      },
+      {
+        type: 'header' as const,
+        content: '3. Decision: Real-Time Voice Synthesis Strategy'
+      },
+      {
+        type: 'paragraph' as const,
+        content: 'Aether requires a voice interaction experience that feels natural and conversational. The target Time-To-First-Audio (TTFA) is under 2.0 seconds (ideally <1.0s) to avoid the "robotic pause".'
+      },
+      {
+        type: 'header' as const,
+        content: 'The Solution: WebGPU + Sentence-Level Streaming'
+      },
+      {
+        type: 'list' as const,
+        content: [
+          'Engine: kokoro-js running on onnxruntime-web with the WebGPU backend.',
+          'Pipeline: Sentence-level streaming from LLM -> Session Manager -> TTS Worker.',
+          'Model: fp32 precision Kokoro-82M ONNX model.'
+        ]
+      },
+      {
+        type: 'header' as const,
+        content: 'Key Rationale'
+      },
+      {
+        type: 'list' as const,
+        content: [
+          'WebGPU vs WASM: WASM inference was ~1.2s/sentence. WebGPU dropped this to ~80-150ms, eliminating the generation bottleneck.',
+          'Sentence-Streaming: We buffer text chunks until a sentence is complete, then immediately generate audio. TTFA drops to ~500ms.',
+          'Precision (fp32 vs int8): Quantized q8 models caused audio artifacts on WebGPU. We stuck with fp32 (~300MB) for stability, using browser caching to mitigate download size.',
+          'Buffer Management: We explicitly copy audio buffers before transferring from the worker to prevent memory heap detachment issues.',
+          'UI Continuity: The useVoiceAgent hook maintains "speaking" state during micro-pauses between sentences to prevent UI flickering.'
         ]
       }
     ]

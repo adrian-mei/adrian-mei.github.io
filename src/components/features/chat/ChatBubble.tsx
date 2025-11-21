@@ -40,7 +40,7 @@ export const ChatBubble: React.FC<ChatBubbleProps> = ({ message, onLinkClick }) 
       
       <div className={`flex flex-col max-w-[85%] ${isUser ? 'items-end' : 'items-start'}`}>
         <div 
-          className={`text-[15px] leading-relaxed shadow-lg backdrop-blur-sm overflow-hidden ${
+          className={`text-[15px] leading-relaxed shadow-lg backdrop-blur-sm overflow-hidden break-words ${
             isUser 
               ? 'bg-gradient-to-br from-blue-600 to-purple-600 text-white px-5 py-3 rounded-2xl rounded-tr-sm border border-white/10' 
               : 'bg-white/5 border border-white/5 text-zinc-100 px-5 py-3 rounded-2xl rounded-tl-sm' 
