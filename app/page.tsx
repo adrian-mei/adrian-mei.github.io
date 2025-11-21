@@ -7,6 +7,7 @@ import Projects from '../src/components/features/projects/Projects';
 import About from '../src/components/features/about/About';
 import Footer from '../src/components/layout/Footer';
 import ChatInterface from '../src/components/features/chat/ChatInterface';
+import GameManager from '../src/components/features/arcade/GameManager';
 import ErrorBoundary from '../src/components/ErrorBoundary';
 import useIntersectionObserver from '../src/hooks/useIntersectionObserver';
 import useExtensionDetector from '../src/hooks/useExtensionDetector';
@@ -58,6 +59,7 @@ const Home = () => {
       <ErrorBoundary>
         <ChatInterface />
       </ErrorBoundary>
+      <GameManager />
     </div>
   );
 };
