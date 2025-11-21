@@ -8,6 +8,7 @@ import About from '../src/components/features/about/About';
 import Footer from '../src/components/layout/Footer';
 import ChatInterface from '../src/components/features/chat/ChatInterface';
 import GameManager from '../src/components/features/arcade/GameManager';
+import BlogDrawer from '../src/components/features/blog/BlogDrawer';
 import ErrorBoundary from '../src/components/ErrorBoundary';
 import useIntersectionObserver from '../src/hooks/useIntersectionObserver';
 import useExtensionDetector from '../src/hooks/useExtensionDetector';
@@ -15,6 +16,7 @@ import useExtensionDetector from '../src/hooks/useExtensionDetector';
 const Home = () => {
   const { isDetected, extensionName } = useExtensionDetector();
   const [activeSection, setActiveSection] = useState('home');
+  const [isBlogOpen, setIsBlogOpen] = useState(false);
 
   const heroRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
@@ -43,7 +45,15 @@ const Home = () => {
 
   return (
     <div className="bg-zinc-950 text-zinc-100 min-h-screen relative">
-      <Navigation activeSection={activeSection} scrollToSection={scrollToSection} />
+      <Navigation 
+        activeSection={activeSection} 
+        scrollToSection={scrollToSection} 
+        onOpenBlog={() => setIsBlogOpen(true)}
+      />
+      <BlogDrawer 
+        isOpen={isBlogOpen} 
+        onClose={() => setIsBlogOpen(false)} 
+      />
       <main>
         <div ref={heroRef}>
           <Hero scrollToSection={scrollToSection} />
