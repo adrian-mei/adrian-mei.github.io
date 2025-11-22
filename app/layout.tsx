@@ -3,8 +3,8 @@ import './globals.css'
 import { LoggingProvider } from '@/src/providers/LoggingProvider'
 
 export const metadata: Metadata = {
-  title: "Adrian's Portfolio",
-  description: 'Personal portfolio of Adrian Mei',
+  title: "Cogito.cv",
+  description: 'I think, therefore I am. Personal portfolio of Adrian Mei.',
 }
 
 export default function RootLayout({

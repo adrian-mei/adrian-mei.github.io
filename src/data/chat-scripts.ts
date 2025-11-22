@@ -1,5 +1,5 @@
 import { personal, projects, skills } from './portfolio';
-import { ChatMessage } from '../services/chat-service';
+import { ChatMessage } from '../types/chat';
 import { logger } from '../services/logger';
 
 // Helper: Pick random N items from an array
@@ -108,33 +108,33 @@ export const getHardcodedResponse = (input: string): string | null => {
   if (match(/(tech stack|technologies|languages|what do you use|skills|capabilities)/)) {
     const core = skills.filter(s => s.category === 'core' || s.category === 'infra').map(s => s.name).join(", ");
     const frontend = skills.filter(s => s.category === 'frontend').map(s => s.name).join(", ");
-    return `**Adrian's Tech Stack:**\n\n**Core & Infra:** ${core}\n**Frontend & AI:** ${frontend}\n\nHe believes in using the right tool for the job, but he's deepest in the Kubernetes/Scala ecosystem.`;
+    return `**Cognitive Capabilities (Tech Stack):**\n\n**Core & Infra:** ${core}\n**Frontend & AI:** ${frontend}\n\nAdrian selects the right tool for the job, though my data indicates a strong preference for the Kubernetes/Scala ecosystem.`;
   }
 
   // --- WAR STORIES ---
   if (match(/(war story|hardest bug|biggest challenge|analytics module)/)) {
     const scaleOps = projects.find(p => p.title === "Scale-Ops Core");
-    return scaleOps?.story || "He has a few insane stories, but the Scale-Ops migration was a defining moment. Ask me about the 'Analytics Module Chaos'.";
+    return scaleOps?.story || "My logs contain several critical incidents, but the Scale-Ops migration was a defining moment. Ask me about the 'Analytics Module Chaos'.";
   }
 
   // --- CONTACT (SAFE) ---
   if (match(/(contact|email|reach out|hire you|resume|cv)/)) {
-    return `He's always open to discussing new opportunities. You should definitely **connect with him on LinkedIn** or use the **Contact Form** below to get in touch.`;
+    return `Communication protocols are open. You should **connect with him on LinkedIn** or use the **Contact Form** below to initiate a handshake.`;
   }
 
   // --- ABOUT ME ---
   if (match(/(about (me|you)|who are you|background|experience)/)) {
-    return "Adrian is a Senior Software Engineer who thrives in the chaos of early-stage startups. When he's not shipping zero-downtime migrations, he's usually boxing, hiking, or helping immigrant-owned businesses get online. He's basically a tech wizard with a huge heart for community.";
+    return "I am Cogito, the digital interface for Adrian Mei. Adrian is a Senior Software Engineer who thrives in high-entropy startup environments. When not deploying zero-downtime migrations, he engages in boxing, hiking, and empowering immigrant-owned businesses. A fusion of technical precision and human empathy.";
   }
 
   // --- EDUCATION ---
   if (match(/(education|degree|university|college)/)) {
-    return "He studied Computer Science at **University of California, Irvine (UCI)**.";
+    return "The biological operator studied Computer Science at **University of California, Irvine (UCI)**.";
   }
 
   // --- LOCATION ---
   if (match(/(location|where are you|located|based)/)) {
-    return "He's currently based in **Irvine, California**.";
+    return `He is currently operational in **${personal.location}**.`;
   }
 
   return null; // No hardcoded response, use LLM

@@ -13,7 +13,7 @@ interface HeroProps {
 }
 
 const Hero = ({ scrollToSection }: HeroProps) => {
-  const { name, location, hero } = personal;
+  const { name, phonetic, location, hero } = personal;
 
   return (
     <section id="home" className="relative h-screen flex flex-col justify-center md:justify-between gap-12 md:gap-0 py-20 md:py-32 overflow-hidden">
@@ -21,10 +21,13 @@ const Hero = ({ scrollToSection }: HeroProps) => {
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-zinc-950/50 to-zinc-950 pointer-events-none md:hidden" />
       
       {/* Top Section: Name */}
-      <div className="relative z-10 text-center px-6 w-full">
+      <div className="relative z-10 text-center px-6 w-full flex flex-col items-center gap-4">
         <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold bg-gradient-to-r from-blue-400 via-purple-500 to-emerald-400 bg-clip-text text-transparent drop-shadow-2xl">
           {name}
         </h1>
+        <p className="text-zinc-500 font-mono text-sm md:text-base tracking-widest uppercase">
+          {phonetic}
+        </p>
       </div>
 
       {/* Middle Section is empty to reveal animation */}

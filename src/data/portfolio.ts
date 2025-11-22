@@ -2,7 +2,8 @@
 import { BookOpen, Compass, Dumbbell, Heart, Server, Cpu, Code2, Users, Camera, Utensils } from 'lucide-react';
 
 export const personal = {
-  name: "Adrian Mei",
+  name: "Cogito",
+  phonetic: "KOH · ji · toe",
   role: "Senior Software Engineer",
   location: "San Francisco",
   about: "I'm a software engineer who thrives on making an impact in small startup environments. Outside of work, you can find me running, camping, hiking, or boxing. I'm passionate about community and actively volunteer with a nonprofit helping immigrant-owned small businesses in San Francisco. I'm always learning—whether it's taking classes at CCSF or teaching myself how to cook.",
@@ -13,7 +14,7 @@ export const personal = {
     audienceAdjustment: "Ask who I am speaking with (Recruiters, Founders, Engineers, Friends). Pivot to technical depth for engineers and high-level impact for recruiters."
   },
   hero: {
-    tagline: "Infra. AI. Community.",
+    tagline: "I think, therefore I am.",
     description: "Building systems for scale. Cultivating community for impact. Living for the moments in between.",
     primaryAction: "Explore My Work"
   }

@@ -22,8 +22,8 @@ const Navigation = ({ activeSection, scrollToSection, onOpenBlog, onOpenGallery 
     <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/60 backdrop-blur-xl border-b border-zinc-700/50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
-        <div className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent z-50 relative">
-          AM
+        <div className="text-xl font-bold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent z-50 relative tracking-wider">
+          CO
         </div>
 
         {/* Desktop Navigation */}
