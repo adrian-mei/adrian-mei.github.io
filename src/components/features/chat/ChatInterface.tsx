@@ -29,16 +29,6 @@ const ChatInterface = () => {
 
   const messagesEndRef = useChatScroll(messages, isLoading, isOpen);
 
-  // Logging: Chat State
-  React.useEffect(() => {
-    logger.debug('[ChatInterface] State Updated', { 
-      isOpen, 
-      isLoading, 
-      messageCount: messages.length,
-      lastRole: messages.length > 0 ? messages[messages.length - 1].role : 'none'
-    });
-  }, [isOpen, isLoading, messages]);
-
   // Handle clicks on internal links (e.g. /contact) to scroll instead of navigate
   const handleContentClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const target = e.target as HTMLElement;

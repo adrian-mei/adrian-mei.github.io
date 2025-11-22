@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { AudioGenerator } from '../features/audio/AudioGenerator';
 import { Menu, X } from 'lucide-react';
+import { logger } from '@/src/services/logger';
 
 interface NavigationProps {
   activeSection: string;
@@ -11,6 +12,11 @@ interface NavigationProps {
 
 const Navigation = ({ activeSection, scrollToSection, onOpenBlog, onOpenGallery }: NavigationProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleNavClick = (section: string) => {
+    logger.navigation(section);
+    scrollToSection(section);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/60 backdrop-blur-xl border-b border-zinc-700/50">
@@ -25,7 +31,7 @@ const Navigation = ({ activeSection, scrollToSection, onOpenBlog, onOpenGallery 
           {['home', 'projects', 'about'].map((section) => (
             <button
               key={section}
-              onClick={() => scrollToSection(section)}
+              onClick={() => handleNavClick(section)}
               className={`capitalize transition-all duration-300 ${
                 activeSection === section 
                   ? 'text-blue-400 scale-110' 
@@ -36,13 +42,19 @@ const Navigation = ({ activeSection, scrollToSection, onOpenBlog, onOpenGallery 
             </button>
           ))}
           <button
-            onClick={onOpenBlog}
+            onClick={() => {
+              logger.action('open_drawer', { type: 'blog' });
+              onOpenBlog();
+            }}
             className="capitalize transition-all duration-300 text-zinc-400 hover:text-blue-400 hover:scale-105"
           >
             Writing
           </button>
           <button
-            onClick={onOpenGallery}
+            onClick={() => {
+              logger.action('open_drawer', { type: 'gallery' });
+              onOpenGallery();
+            }}
             className="capitalize transition-all duration-300 text-zinc-400 hover:text-pink-400 hover:scale-105"
           >
             Photos
@@ -56,7 +68,10 @@ const Navigation = ({ activeSection, scrollToSection, onOpenBlog, onOpenGallery 
         <div className="md:hidden z-50 relative flex items-center gap-4">
            <AudioGenerator />
            <button 
-             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+             onClick={() => {
+               logger.action('toggle_mobile_menu', { open: !isMobileMenuOpen });
+               setIsMobileMenuOpen(!isMobileMenuOpen);
+             }}
              className="p-2 text-zinc-400 hover:text-white transition-colors"
            >
              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -72,7 +87,7 @@ const Navigation = ({ activeSection, scrollToSection, onOpenBlog, onOpenGallery 
               <button
                 key={section}
                 onClick={() => {
-                  scrollToSection(section);
+                  handleNavClick(section);
                   setIsMobileMenuOpen(false);
                 }}
                 className={`capitalize text-left py-3 px-4 rounded-lg transition-all ${
@@ -87,6 +102,7 @@ const Navigation = ({ activeSection, scrollToSection, onOpenBlog, onOpenGallery 
             <div className="h-px bg-zinc-800 my-2" />
             <button
               onClick={() => {
+                logger.action('open_drawer', { type: 'blog', source: 'mobile' });
                 onOpenBlog();
                 setIsMobileMenuOpen(false);
               }}
@@ -96,6 +112,7 @@ const Navigation = ({ activeSection, scrollToSection, onOpenBlog, onOpenGallery 
             </button>
             <button
               onClick={() => {
+                logger.action('open_drawer', { type: 'gallery', source: 'mobile' });
                 onOpenGallery();
                 setIsMobileMenuOpen(false);
               }}

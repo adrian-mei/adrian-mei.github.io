@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { getHardcodedResponse } from '@/src/data/chat-scripts';
-import { ChatMessage, streamChatCompletion } from '@/src/services/chat-service';
+import { streamChatCompletion } from '@/src/services/chat-service';
+import { ChatMessage } from '@/src/types/chat';
 import { logger } from '@/src/services/logger';
 
 const STORAGE_KEYS = {
@@ -88,6 +89,7 @@ export const useChatEngine = () => {
 
     // 1. Check Wall of Text
     if (content.length > LIMITS.MAX_CHARS) {
+      logger.warn('chat_wall_of_text', { length: content.length });
       const warningMsg: ChatMessage = {
         id: Date.now().toString(),
         role: 'assistant',
@@ -101,6 +103,8 @@ export const useChatEngine = () => {
 
     // 2. Check Rate Limit
     if (isRateLimited || messageCount >= LIMITS.MAX_MESSAGES) {
+      logger.warn('chat_rate_limited', { count: messageCount });
+      
       // If not already marked as limited in state (e.g. just hit the limit), update storage
       if (!isRateLimited) {
         setIsRateLimited(true);

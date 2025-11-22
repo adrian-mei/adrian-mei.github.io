@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { X, ArrowLeft, Sparkles, Clock, ArrowUpRight, Pause, Play, Volume2, Layers, Zap, Code2, Brain, Cpu } from 'lucide-react';
-import { blogPosts, BlogPost } from '../../../data/blog';
+import { blogPosts } from '../../../data/blog';
+import { useBlogDrawer } from '@/src/hooks/blog/useBlogDrawer';
 
 interface BlogDrawerProps {
   isOpen: boolean;
@@ -8,81 +9,20 @@ interface BlogDrawerProps {
 }
 
 const BlogDrawerFluid = ({ isOpen, onClose }: BlogDrawerProps) => {
-  const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
-  const [isClosing, setIsClosing] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
-  const [processedContent, setProcessedContent] = useState('');
-  const [isSpeaking, setIsSpeaking] = useState(false);
+  const {
+    selectedPost,
+    setSelectedPost,
+    isClosing,
+    scrollProgress,
+    processedContent,
+    isSpeaking,
+    toggleSpeech,
+    contentRef,
+    handleScroll,
+    handleClose
+  } = useBlogDrawer({ isOpen, onClose, closeDelay: 400 });
+
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  
-  const contentRef = useRef<HTMLDivElement>(null);
-
-  // Process content
-  useEffect(() => {
-    if (selectedPost) {
-      setIsSpeaking(false);
-      window.speechSynthesis.cancel();
-      setProcessedContent(selectedPost.content);
-    }
-  }, [selectedPost]);
-
-  // Handle TTS
-  const toggleSpeech = () => {
-    if (isSpeaking) {
-      window.speechSynthesis.cancel();
-      setIsSpeaking(false);
-    } else if (selectedPost) {
-      const tempDiv = document.createElement('div');
-      tempDiv.innerHTML = selectedPost.content;
-      const text = tempDiv.textContent || '';
-      
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.rate = 0.9;
-      window.speechSynthesis.speak(utterance);
-      setIsSpeaking(true);
-    }
-  };
-
-  // Clean up speech on close
-  useEffect(() => {
-    return () => {
-      window.speechSynthesis.cancel();
-    };
-  }, []);
-
-  // Handle scroll progress
-  const handleScroll = () => {
-    if (!contentRef.current) return;
-    const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
-    const progress = (scrollTop / (scrollHeight - clientHeight)) * 100;
-    setScrollProgress(Math.min(100, Math.max(0, progress)));
-  };
-
-  // Reset progress when post changes
-  useEffect(() => {
-    if (contentRef.current) {
-      contentRef.current.scrollTop = 0;
-      setScrollProgress(0);
-    }
-  }, [selectedPost]);
-
-  // Handle closing animation
-  const handleClose = () => {
-    setIsClosing(true);
-    setTimeout(() => {
-      setIsClosing(false);
-      setSelectedPost(null);
-      onClose();
-    }, 400);
-  };
-
-  // Reset state when drawer opens
-  useEffect(() => {
-    if (isOpen) {
-      setIsClosing(false);
-    }
-  }, [isOpen]);
 
   // Get unique tags for filter
   const uniqueTags = Array.from(new Set(blogPosts.flatMap(post => post.tags)));

@@ -3,7 +3,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import rehypeHighlight from 'rehype-highlight';
 import { Bot, User } from 'lucide-react';
-import { ChatMessage } from '../../../services/chat-service';
+import { ChatMessage } from '@/src/types/chat';
 import { logger } from '@/src/services/logger';
 
 // Styles for syntax highlighting

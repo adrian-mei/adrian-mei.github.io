@@ -3,19 +3,13 @@
 
 const isDev = process.env.NODE_ENV === 'development';
 
+import { LogEntry } from '@/src/types/logger';
+import { APP_CONFIG } from '@/src/config/app-config';
+
 // Master Toggle for Logging
 // Set to true to enable console logging and server-side shipping (for non-errors).
 // Errors are ALWAYS logged.
-export const ENABLE_LOGGING = true;
-
-export type LogEventCategory = 'ACTION' | 'API' | 'NAVIGATION' | 'CHAT' | 'SYSTEM';
-
-interface LogEntry {
-  level: 'debug' | 'info' | 'warn' | 'error';
-  msg: string;
-  timestamp: string;
-  [key: string]: any;
-}
+export const ENABLE_LOGGING = APP_CONFIG.ENABLE_LOGGING;
 
 const log = (level: 'debug' | 'info' | 'warn' | 'error', msg: string, data?: object) => {
   // 1. Filtering: Skip non-errors if logging is disabled
