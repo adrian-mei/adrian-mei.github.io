@@ -9,6 +9,7 @@ import Footer from '../src/components/layout/Footer';
 import ChatInterface from '../src/components/features/chat/ChatInterface';
 import GameManager from '../src/components/features/arcade/GameManager';
 import BlogDrawer from '../src/components/features/blog/BlogDrawer';
+import GalleryDrawer from '../src/components/features/gallery/GalleryDrawer';
 import ErrorBoundary from '../src/components/ErrorBoundary';
 import useIntersectionObserver from '../src/hooks/useIntersectionObserver';
 import useExtensionDetector from '../src/hooks/useExtensionDetector';
@@ -17,6 +18,7 @@ const Home = () => {
   const { isDetected, extensionName } = useExtensionDetector();
   const [activeSection, setActiveSection] = useState('home');
   const [isBlogOpen, setIsBlogOpen] = useState(false);
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
 
   const heroRef = useRef<HTMLDivElement>(null);
   const projectsRef = useRef<HTMLDivElement>(null);
@@ -49,10 +51,15 @@ const Home = () => {
         activeSection={activeSection} 
         scrollToSection={scrollToSection} 
         onOpenBlog={() => setIsBlogOpen(true)}
+        onOpenGallery={() => setIsGalleryOpen(true)}
       />
       <BlogDrawer 
         isOpen={isBlogOpen} 
         onClose={() => setIsBlogOpen(false)} 
+      />
+      <GalleryDrawer
+        isOpen={isGalleryOpen}
+        onClose={() => setIsGalleryOpen(false)}
       />
       <main>
         <div ref={heroRef}>

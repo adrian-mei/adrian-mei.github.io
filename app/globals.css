@@ -34,4 +34,19 @@ body {
   .scrollbar-thin::-webkit-scrollbar-thumb:hover {
     @apply bg-zinc-700;
   }
+
+  /* Simple Animation Utilities */
+  .animate-in {
+    animation-duration: 200ms;
+    animation-fill-mode: forwards;
+    animation-timing-function: ease-out;
+  }
+  .fade-in {
+    animation-name: fadeIn;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }

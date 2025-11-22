@@ -5,9 +5,10 @@ interface NavigationProps {
   activeSection: string;
   scrollToSection: (sectionId: string) => void;
   onOpenBlog: () => void;
+  onOpenGallery: () => void;
 }
 
-const Navigation = ({ activeSection, scrollToSection, onOpenBlog }: NavigationProps) => {
+const Navigation = ({ activeSection, scrollToSection, onOpenBlog, onOpenGallery }: NavigationProps) => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-zinc-900/60 backdrop-blur-xl border-b border-zinc-700/50">
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
@@ -36,6 +37,12 @@ const Navigation = ({ activeSection, scrollToSection, onOpenBlog }: NavigationPr
             className="capitalize transition-all duration-300 text-zinc-400 hover:text-blue-400 hover:scale-105"
           >
             Writing
+          </button>
+          <button
+            onClick={onOpenGallery}
+            className="capitalize transition-all duration-300 text-zinc-400 hover:text-pink-400 hover:scale-105"
+          >
+            Photos
           </button>
           <div className="pl-4 border-l border-zinc-700/50">
             <AudioGenerator />

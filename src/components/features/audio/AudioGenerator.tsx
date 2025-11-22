@@ -5,6 +5,7 @@ export const AudioGenerator: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [volume, setVolume] = useState(0.1); // Default low volume
+  const [mounted, setMounted] = useState(false);
   
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -12,6 +13,7 @@ export const AudioGenerator: React.FC = () => {
 
   // Initialize Audio
   useEffect(() => {
+    setMounted(true);
     const audio = new Audio('/mp3/sleep.mp3');
     audio.loop = true;
     audio.volume = volume;
@@ -111,13 +113,13 @@ export const AudioGenerator: React.FC = () => {
         onClick={() => setIsOpen(!isOpen)}
         aria-label="Toggle Sonic Atmosphere"
         className={`p-2 rounded-full transition-all duration-300 flex items-center gap-2 ${
-          isPlaying 
+          mounted && isPlaying 
             ? 'bg-indigo-500/10 text-indigo-400 ring-1 ring-indigo-500/50' 
             : 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800'
         }`}
         title="Sonic Atmosphere"
       >
-        <Sparkles className={`w-5 h-5 ${isPlaying ? 'animate-pulse' : ''}`} />
+        <Sparkles className={`w-5 h-5 ${mounted && isPlaying ? 'animate-pulse' : ''}`} />
       </button>
 
       {/* Dropdown Panel */}
@@ -145,12 +147,12 @@ export const AudioGenerator: React.FC = () => {
           {/* Play Control */}
           <div className="flex flex-col items-center mb-6">
             <div className={`relative w-16 h-16 rounded-full flex items-center justify-center mb-4 transition-all duration-500 ${
-                isPlaying 
+                mounted && isPlaying 
                   ? 'bg-zinc-800 ring-1 ring-indigo-500/50 shadow-lg shadow-indigo-500/20' 
                   : 'bg-zinc-800 ring-1 ring-white/5'
               }`}>
                 {/* Pulse Ring */}
-                {isPlaying && (
+                {mounted && isPlaying && (
                     <div className="absolute inset-0 rounded-full border border-indigo-500/30 animate-ping opacity-20" />
                 )}
                 
