@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
+import useIntersectionObserver from '../../../hooks/core/useIntersectionObserver';
 import Bio from './Bio';
 import Skills from './Skills';
 import Contact from './Contact';

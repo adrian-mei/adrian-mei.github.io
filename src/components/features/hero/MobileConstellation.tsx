@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
+import useIntersectionObserver from '../../../hooks/core/useIntersectionObserver';
 
 const MobileConstellation = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);

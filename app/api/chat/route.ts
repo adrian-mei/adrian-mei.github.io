@@ -1,5 +1,5 @@
 import { streamText } from 'ai';
-import { getGoogleProvider, geminiModel } from '@/shared/config/ai-config';
+import { getGoogleProvider, geminiModel } from '@/src/config/ai-config';
 import { generateSystemPrompt } from '@/src/services/prompt-service';
 import { logger } from '@/src/services/logger';
 

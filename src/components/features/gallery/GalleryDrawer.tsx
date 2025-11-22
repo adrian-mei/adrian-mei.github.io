@@ -217,18 +217,18 @@ const GalleryDrawer = ({ isOpen, onClose }: GalleryDrawerProps) => {
             className="absolute inset-0 flex items-center justify-center overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Nav Arrows (Desktop) */}
+            {/* Nav Arrows */}
             <button 
                 onClick={(e) => { e.stopPropagation(); handlePrev(); }}
-                className="absolute left-4 md:left-8 p-4 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-all z-40 hidden md:block group"
+                className="absolute left-2 md:left-8 p-2 md:p-4 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-all z-40 group"
             >
-                <ChevronLeft className="w-10 h-10 group-hover:-translate-x-1 transition-transform" />
+                <ChevronLeft className="w-8 h-8 md:w-10 md:h-10 group-hover:-translate-x-1 transition-transform" />
             </button>
             <button 
                 onClick={(e) => { e.stopPropagation(); handleNext(); }}
-                className="absolute right-4 md:right-8 p-4 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-all z-40 hidden md:block group"
+                className="absolute right-2 md:right-8 p-2 md:p-4 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-all z-40 group"
             >
-                <ChevronRight className="w-10 h-10 group-hover:translate-x-1 transition-transform" />
+                <ChevronRight className="w-8 h-8 md:w-10 md:h-10 group-hover:translate-x-1 transition-transform" />
             </button>
 
             {/* Media */}
