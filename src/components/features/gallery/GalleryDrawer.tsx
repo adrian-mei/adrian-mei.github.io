@@ -81,7 +81,7 @@ const GalleryDrawer = ({ isOpen, onClose }: GalleryDrawerProps) => {
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [selectedImage, selectedIndex, onClose]); // Dependencies critical for closure capture
+  }, [selectedImage, selectedIndex, onClose]);
 
   return (
     <>
@@ -198,114 +198,118 @@ const GalleryDrawer = ({ isOpen, onClose }: GalleryDrawerProps) => {
         </div>
       </div>
 
-      {/* Lightbox Modal with Filmstrip */}
+      {/* Immersive Lightbox */}
       {selectedImage && (
         <div 
-          className="fixed inset-0 z-[80] bg-black/95 flex flex-col animate-in fade-in duration-200"
+          className="fixed inset-0 z-[80] bg-black flex flex-col animate-in fade-in duration-300"
           onClick={() => setSelectedImage(null)}
         >
-          {/* Close Button */}
+          {/* Close Button - Floating */}
           <button 
-            className="absolute top-6 right-6 p-3 text-zinc-400 hover:text-white bg-zinc-900/50 rounded-full hover:bg-zinc-800 transition-all z-50"
+            className="absolute top-6 right-6 p-3 text-white/80 hover:text-white bg-black/20 backdrop-blur-md rounded-full hover:bg-white/20 transition-all z-50"
             onClick={() => setSelectedImage(null)}
           >
             <X className="w-6 h-6" />
           </button>
 
-          {/* Main Stage */}
+          {/* Main Stage - Fullscreen */}
           <div 
-            className="flex-1 relative flex items-center justify-center overflow-hidden p-4 md:p-8 pb-24"
+            className="absolute inset-0 flex items-center justify-center overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Nav Arrows (Desktop) */}
             <button 
                 onClick={(e) => { e.stopPropagation(); handlePrev(); }}
-                className="absolute left-4 md:left-8 p-4 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-all z-40 hidden md:block"
+                className="absolute left-4 md:left-8 p-4 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-all z-40 hidden md:block group"
             >
-                <ChevronLeft className="w-8 h-8" />
+                <ChevronLeft className="w-10 h-10 group-hover:-translate-x-1 transition-transform" />
             </button>
             <button 
                 onClick={(e) => { e.stopPropagation(); handleNext(); }}
-                className="absolute right-4 md:right-8 p-4 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-all z-40 hidden md:block"
+                className="absolute right-4 md:right-8 p-4 text-white/50 hover:text-white hover:bg-white/10 rounded-full transition-all z-40 hidden md:block group"
             >
-                <ChevronRight className="w-8 h-8" />
+                <ChevronRight className="w-10 h-10 group-hover:translate-x-1 transition-transform" />
             </button>
 
             {/* Media */}
             {selectedImage.type === 'video' ? (
               <video
                 src={selectedImage.src}
-                className="max-h-full max-w-full w-auto h-auto object-contain rounded-lg shadow-2xl"
+                className="w-full h-full object-contain"
                 controls
                 autoPlay
                 playsInline
               />
             ) : (
-              <Image
-                src={selectedImage.src}
-                alt={selectedImage.alt}
-                width={1920}
-                height={1080}
-                className="max-h-full max-w-full w-auto h-auto object-contain rounded-lg shadow-2xl"
-                priority
-              />
+              <div className="relative w-full h-full">
+                <Image
+                  src={selectedImage.src}
+                  alt={selectedImage.alt}
+                  fill
+                  className="object-contain"
+                  priority
+                  quality={100}
+                />
+              </div>
             )}
-            
-            {/* Caption Overlay */}
-            <div className="absolute bottom-28 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 w-full px-4 pointer-events-none z-30">
-              <span className="px-3 py-1 bg-pink-500/20 border border-pink-500/30 rounded-full text-pink-300 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
+          </div>
+
+          {/* Overlays Layer (Caption + Filmstrip) */}
+          <div 
+            className="absolute bottom-0 left-0 right-0 z-40 flex flex-col justify-end pointer-events-none"
+            style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, transparent 100%)' }}
+          >
+            {/* Caption Area */}
+            <div className="pb-6 pt-12 px-8 text-center pointer-events-auto">
+               <span className="inline-block px-3 py-1 mb-2 bg-pink-500/80 rounded-full text-white text-xs font-bold uppercase tracking-wider shadow-lg">
                 {selectedImage.category}
               </span>
               {selectedImage.caption && (
-                <div className="px-6 py-3 bg-black/70 backdrop-blur-md rounded-full border border-white/10 text-center">
-                  <p className="text-white text-sm font-medium">{selectedImage.caption}</p>
-                </div>
+                <p className="text-white/90 text-lg font-medium text-shadow-sm">{selectedImage.caption}</p>
               )}
             </div>
-          </div>
 
-          {/* Filmstrip Reel */}
-          <div 
-            className="h-24 md:h-32 w-full bg-zinc-950/90 border-t border-zinc-800 backdrop-blur-xl flex items-center z-40"
-            onClick={(e) => e.stopPropagation()}
-          >
+            {/* Filmstrip Reel */}
             <div 
-                ref={filmstripRef}
-                className="flex items-center gap-4 px-8 overflow-x-auto w-full h-full scrollbar-hide scroll-smooth"
+              className="h-20 md:h-24 w-full pointer-events-auto pb-4 px-4"
+              onClick={(e) => e.stopPropagation()}
             >
-                {filteredItems.map((item, idx) => (
-                    <div 
-                        key={item.id}
-                        onClick={() => handleSelect(item)}
-                        className={`relative flex-shrink-0 h-16 w-24 md:h-20 md:w-32 cursor-pointer rounded-lg overflow-hidden transition-all duration-300 ${
-                            selectedImage.id === item.id 
-                                ? 'ring-2 ring-pink-500 scale-105 opacity-100' 
-                                : 'opacity-40 hover:opacity-80 hover:scale-105'
-                        }`}
-                    >
-                        {item.type === 'video' ? (
-                             <div className="w-full h-full bg-zinc-900 flex items-center justify-center relative">
-                                <video 
-                                    src={item.src}
-                                    className="w-full h-full object-cover"
-                                    preload="metadata"
-                                    // muted // Don't play in thumb to save resources, just show frame
-                                />
-                                <div className="absolute inset-0 flex items-center justify-center bg-black/30">
-                                    <Play className="w-6 h-6 text-white/80" />
-                                </div>
-                             </div>
-                        ) : (
-                            <Image
-                                src={item.src}
-                                alt={item.alt}
-                                width={150}
-                                height={100}
-                                className="w-full h-full object-cover"
-                            />
-                        )}
-                    </div>
-                ))}
+              <div 
+                  ref={filmstripRef}
+                  className="flex items-center gap-3 px-4 overflow-x-auto w-full h-full scrollbar-hide scroll-smooth"
+              >
+                  {filteredItems.map((item, idx) => (
+                      <div 
+                          key={item.id}
+                          onClick={() => handleSelect(item)}
+                          className={`relative flex-shrink-0 h-full aspect-[3/2] cursor-pointer rounded-md overflow-hidden transition-all duration-300 border-2 ${
+                              selectedImage.id === item.id 
+                                  ? 'border-pink-500 scale-105 opacity-100 shadow-xl shadow-pink-500/20' 
+                                  : 'border-transparent border-white/10 opacity-50 hover:opacity-100 hover:scale-105'
+                          }`}
+                      >
+                          {item.type === 'video' ? (
+                               <div className="w-full h-full bg-zinc-900 flex items-center justify-center relative">
+                                  <video 
+                                      src={item.src}
+                                      className="w-full h-full object-cover"
+                                      preload="metadata"
+                                  />
+                                  <div className="absolute inset-0 flex items-center justify-center bg-black/30">
+                                      <Play className="w-4 h-4 text-white/80" />
+                                  </div>
+                               </div>
+                          ) : (
+                              <Image
+                                  src={item.src}
+                                  alt={item.alt}
+                                  fill
+                                  className="object-cover"
+                              />
+                          )}
+                      </div>
+                  ))}
+              </div>
             </div>
           </div>
         </div>
