@@ -193,29 +193,29 @@ const BlogDrawer = ({ isOpen, onClose }: BlogDrawerProps) => {
                 {/* Main Content */}
                 <div className="lg:col-span-8">
                   <article className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <header className="mb-12">
-                        <h1 className="text-5xl md:text-7xl font-bold text-zinc-100 leading-tight tracking-tight mb-8 font-sans">
+                    <header className="mb-20">
+                        <h1 className="text-6xl md:text-8xl font-bold text-zinc-100 leading-tight tracking-tight mb-10 font-sans">
                           {selectedPost.title}
                         </h1>
                         
-                        <p className="text-2xl text-zinc-400 mb-8 leading-relaxed font-serif border-l-4 border-blue-500/50 pl-6">
+                        <p className="text-4xl text-zinc-400 mb-12 leading-relaxed font-serif border-l-4 border-blue-500/50 pl-6">
                           {selectedPost.excerpt}
                         </p>
                     </header>
                     
-                    <div 
-                        className="prose prose-2xl prose-invert prose-zinc max-w-none font-serif
-                        prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-zinc-100
-                        prose-h2:text-5xl prose-h2:mt-20 prose-h2:mb-8
-                        prose-h3:text-4xl prose-h3:mt-16 prose-h3:mb-6
-                        prose-p:text-zinc-300 prose-p:leading-[2.5] prose-p:text-3xl prose-p:font-light prose-p:mb-12
-                        prose-li:text-zinc-300 prose-li:leading-[2.5] prose-li:text-2xl
-                        prose-a:text-blue-400 hover:prose-a:text-blue-300 prose-a:no-underline hover:prose-a:underline prose-a:transition-colors
-                        prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-8 prose-blockquote:italic prose-blockquote:text-4xl prose-blockquote:text-zinc-400 prose-blockquote:my-16
-                        prose-code:text-blue-300 prose-code:bg-zinc-900 prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-code:font-mono prose-code:text-xl prose-code:border prose-code:border-zinc-800
-                        prose-strong:text-white prose-strong:font-semibold"
-                        dangerouslySetInnerHTML={{ __html: processedContent }}
-                    />
+                  <div 
+                      className="prose prose-2xl prose-invert prose-zinc max-w-none font-serif
+                      prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-zinc-100
+                      prose-h2:text-6xl prose-h2:mt-28 prose-h2:mb-10
+                      prose-h3:text-5xl prose-h3:mt-20 prose-h3:mb-8
+                      prose-p:text-zinc-300 prose-p:leading-[2.2] prose-p:text-4xl prose-p:font-light prose-p:mb-16
+                      prose-li:text-zinc-300 prose-li:leading-[2.2] prose-li:text-4xl
+                      prose-a:text-blue-400 hover:prose-a:text-blue-300 prose-a:no-underline hover:prose-a:underline prose-a:transition-colors
+                      prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-8 prose-blockquote:italic prose-blockquote:text-5xl prose-blockquote:text-zinc-400 prose-blockquote:my-20
+                      prose-code:text-blue-300 prose-code:bg-zinc-900 prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-code:font-mono prose-code:text-2xl prose-code:border prose-code:border-zinc-800
+                      prose-strong:text-white prose-strong:font-semibold"
+                      dangerouslySetInnerHTML={{ __html: processedContent }}
+                  />
                   </article>
                 </div>
 
