@@ -17,7 +17,8 @@ const ChatInterface = () => {
     isLoading,
     hasError,
     retryLastMessage,
-    clearChat
+    clearChat,
+    isRateLimited
   } = useChatEngine();
 
   const {
@@ -72,7 +73,7 @@ const ChatInterface = () => {
               </div>
               <div>
                 <h3 className="font-semibold text-zinc-100 text-base tracking-tight">Ask Me Anything</h3>
-                <span className="text-xs text-zinc-400">About Adrian's experience & skills</span>
+                <span className="text-xs text-zinc-400">About {"Adrian's"} experience & skills</span>
               </div>
             </div>
             <div className="flex items-center gap-1">
@@ -121,7 +122,7 @@ const ChatInterface = () => {
                   <Bot className="w-5 h-5 text-blue-400 animate-pulse" />
                 </div>
                 <div className="flex items-center gap-3 h-auto px-5 py-3 bg-white/5 border border-white/5 rounded-2xl rounded-tl-sm">
-                  <span className="text-sm text-zinc-400">Adrian's AI is thinking...</span>
+                  <span className="text-sm text-zinc-400">{"Adrian's"} AI is thinking...</span>
                   <div className="flex gap-1">
                     <span className="w-1 h-1 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.3s]"></span>
                     <span className="w-1 h-1 bg-zinc-400 rounded-full animate-bounce [animation-delay:-0.15s]"></span>
@@ -131,11 +132,13 @@ const ChatInterface = () => {
               </div>
             )}
 
-            <SuggestionChips 
-              messages={messages} 
-              onSelect={sendMessage} 
-              isLoading={isLoading} 
-            />
+            {!isRateLimited && (
+              <SuggestionChips 
+                messages={messages} 
+                onSelect={sendMessage} 
+                isLoading={isLoading} 
+              />
+            )}
 
             <div ref={messagesEndRef} />
           </div>
@@ -148,6 +151,7 @@ const ChatInterface = () => {
             isLoading={isLoading}
             hasError={hasError}
             onRetry={retryLastMessage}
+            disabled={isRateLimited}
           />
         </div>
       )}

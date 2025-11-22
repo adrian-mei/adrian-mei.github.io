@@ -415,14 +415,16 @@ const InfrastructureMap = () => {
 
     window.addEventListener('resize', handleResize);
 
+    const mountNode = mountRef.current;
+
     return () => {
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('resize', handleResize);
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
       }
-      if (mountRef.current) {
-        mountRef.current.removeChild(renderer.domElement);
+      if (mountNode) {
+        mountNode.removeChild(renderer.domElement);
       }
     };
   }, [isDesktop, isVisible]);

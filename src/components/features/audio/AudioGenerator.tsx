@@ -69,6 +69,7 @@ export const AudioGenerator: React.FC = () => {
       document.removeEventListener('keydown', attemptPlay);
       document.removeEventListener('touchstart', attemptPlay);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // Only run once
 
   // Handle Volume Change

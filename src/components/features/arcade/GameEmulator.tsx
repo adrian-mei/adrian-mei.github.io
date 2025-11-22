@@ -15,9 +15,59 @@ const GameEmulator: React.FC<GameEmulatorProps> = ({ romPath, onClose }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isInsertingCoin, setIsInsertingCoin] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
+  const [volume, setVolume] = useState(0.25);
   const [gameboyInstance, setGameboyInstance] = useState<Gameboy | null>(null);
   const [activeKeys, setActiveKeys] = useState<Record<string, boolean>>({});
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const volumeRef = useRef(volume);
+  const isMutedRef = useRef(isMuted);
+  const wasAutoMuted = useRef(false);
+
+  // Keep refs updated for event listeners
+  useEffect(() => {
+      volumeRef.current = volume;
+  }, [volume]);
+
+  useEffect(() => {
+      isMutedRef.current = isMuted;
+  }, [isMuted]);
+
+  // Smart Mute: Auto-mute on focus loss / leave
+  useEffect(() => {
+      const handleLoss = () => {
+          if (!isMutedRef.current) {
+              setIsMuted(true);
+              wasAutoMuted.current = true;
+          }
+      };
+
+      const handleGain = () => {
+          if (wasAutoMuted.current) {
+              setIsMuted(false);
+              wasAutoMuted.current = false;
+          }
+      };
+
+      window.addEventListener('blur', handleLoss);
+      window.addEventListener('focus', handleGain);
+      document.addEventListener('visibilitychange', () => {
+          if (document.hidden) handleLoss();
+          else handleGain();
+      });
+      document.addEventListener('mouseleave', handleLoss);
+      document.addEventListener('mouseenter', handleGain);
+
+      return () => {
+          window.removeEventListener('blur', handleLoss);
+          window.removeEventListener('focus', handleGain);
+          // visibilitychange event listener removal is tricky with anonymous function, 
+          // but component likely won't unmount often during game session. 
+          // Ideally extract to named function but for brevity in this specific component context:
+          document.removeEventListener('mouseleave', handleLoss);
+          document.removeEventListener('mouseenter', handleGain);
+      };
+  }, []);
 
   useEffect(() => {
     const loadGame = async () => {
@@ -104,21 +154,89 @@ const GameEmulator: React.FC<GameEmulatorProps> = ({ romPath, onClose }) => {
       }
   }, [gameboyInstance]);
 
+  // Intercept Audio Graph for Volume Control
+  useEffect(() => {
+      // @ts-ignore - accessing private audioContext
+      if (gameboyInstance?.apu && gameboyInstance.apu.audioContext) {
+          const apu = gameboyInstance.apu as any;
+          const ctx = apu.audioContext as AudioContext;
+
+          // Poll for the audio node because it is created asynchronously
+          const pollInterval = setInterval(() => {
+              try {
+                // @ts-ignore - accessing internal property
+                const player = apu.ringBufferPlayer;
+                if (player && player.ringBufferPlayerNode) {
+                    const sourceNode = player.ringBufferPlayerNode as AudioNode;
+
+                    // Create Gain Node if it doesn't exist or context changed
+                    if (!gainNodeRef.current || gainNodeRef.current.context !== ctx) {
+                        console.log("Hooking volume control into AudioContext");
+                        const gainNode = ctx.createGain();
+                        gainNode.gain.value = volumeRef.current;
+                        
+                        // Disconnect default routing (source -> destination)
+                        try {
+                            sourceNode.disconnect(ctx.destination);
+                        } catch (e) {
+                            // Ignore if not connected or error
+                        }
+
+                        // Re-route: source -> gain -> destination
+                        sourceNode.connect(gainNode);
+                        gainNode.connect(ctx.destination);
+
+                        gainNodeRef.current = gainNode;
+                        clearInterval(pollInterval);
+                    } else {
+                        // Already hooked
+                        clearInterval(pollInterval);
+                    }
+                }
+              } catch (err) {
+                  console.error("Failed to hook volume control:", err);
+                  clearInterval(pollInterval);
+              }
+          }, 100); // Check every 100ms
+
+          return () => {
+              clearInterval(pollInterval);
+              gainNodeRef.current = null;
+          };
+      }
+  }, [gameboyInstance]); // Run when instance changes
+
+  // Apply Volume & Mute State Updates
+  useEffect(() => {
+      if (!gameboyInstance?.apu) return;
+
+      if (isMuted) {
+          gameboyInstance.apu.disableSound();
+      } else {
+          gameboyInstance.apu.enableSound();
+          // Ensure volume is applied
+          if (gainNodeRef.current) {
+              const currentTime = gainNodeRef.current.context.currentTime;
+              gainNodeRef.current.gain.setTargetAtTime(volume, currentTime, 0.01);
+          }
+      }
+  }, [volume, isMuted, gameboyInstance]);
+
   const toggleMute = () => {
-    if (!gameboyInstance || !gameboyInstance.apu) return;
-    if (isMuted) {
-      gameboyInstance.apu.enableSound();
-    } else {
-      gameboyInstance.apu.disableSound();
-    }
+    // Manual toggle clears auto-mute flag to prevent unwanted behavior
+    wasAutoMuted.current = false;
     setIsMuted(!isMuted);
   };
 
   const handleInsertCoin = () => {
       if (!gameboyInstance) return;
       
-      // 1. Enable Audio immediately (must be in user gesture)
-      if (gameboyInstance.apu) {
+      // 1. Enable Audio immediately ONLY if not muted (must be in user gesture)
+      // Note: We rely on the useEffect above to sync state, but for the initial trigger 
+      // we might need to ensure the context is resumed if !isMuted.
+      // However, since isMuted starts TRUE, this block is skipped initially.
+      // When user clicks "Unmute", state changes, effect runs, context resumes.
+      if (!isMuted && gameboyInstance.apu) {
           gameboyInstance.apu.enableSound();
       }
 
@@ -173,21 +291,39 @@ const GameEmulator: React.FC<GameEmulatorProps> = ({ romPath, onClose }) => {
       >
         
         {/* Header / Controls (Top Right) */}
-        <div className="absolute top-6 right-6 flex gap-4 z-20">
-          <button 
-            onClick={toggleMute}
-            className="text-zinc-400 hover:text-white transition-colors bg-black/50 rounded-full p-2 hover:bg-black/80"
-            aria-label={isMuted ? "Unmute" : "Mute"}
-          >
-            {isMuted ? <VolumeX size={24} /> : <Volume2 size={24} />}
-          </button>
-          <button 
-            onClick={onClose}
-            className="text-zinc-400 hover:text-red-500 transition-colors bg-black/50 rounded-full p-2 hover:bg-black/80"
-            aria-label="Close Game"
-          >
-            <X size={24} />
-          </button>
+        <div className="absolute top-6 right-6 flex items-center gap-4 z-20 bg-black/50 rounded-full p-2 backdrop-blur-sm">
+            {/* Volume Controls */}
+            <div className="flex items-center gap-2 pr-2 border-r border-zinc-700/50">
+                <button 
+                    onClick={toggleMute}
+                    className="text-zinc-400 hover:text-white transition-colors p-1"
+                    aria-label={isMuted ? "Unmute" : "Mute"}
+                >
+                    {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                </button>
+                
+                {!isMuted && (
+                    <div className="w-24 px-2 flex items-center">
+                        <input
+                            type="range"
+                            min="0"
+                            max="1"
+                            step="0.05"
+                            value={volume}
+                            onChange={(e) => setVolume(parseFloat(e.target.value))}
+                            className="w-full h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer accent-emerald-500 hover:accent-emerald-400"
+                        />
+                    </div>
+                )}
+            </div>
+
+            <button 
+                onClick={onClose}
+                className="text-zinc-400 hover:text-red-500 transition-colors p-1"
+                aria-label="Close Game"
+            >
+                <X size={24} />
+            </button>
         </div>
 
         {/* Arcade Cabinet Structure */}
@@ -223,7 +359,7 @@ const GameEmulator: React.FC<GameEmulatorProps> = ({ romPath, onClose }) => {
                             <div className="animate-in fade-in zoom-in duration-300 flex flex-col items-center">
                                 <Gamepad2 className="w-20 h-20 text-emerald-400 mb-6" />
                                 <h2 className="text-4xl font-black text-white mb-2 tracking-tighter uppercase">Arcade Mode</h2>
-                                <p className="text-zinc-400 mb-8 uppercase tracking-widest text-xs">The King of Fighters '95</p>
+                                <p className="text-zinc-400 mb-8 uppercase tracking-widest text-xs">The King of Fighters {"'95"}</p>
                                 
                                 <button 
                                     onClick={(e) => {

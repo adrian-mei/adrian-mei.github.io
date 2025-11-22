@@ -35,7 +35,7 @@ const Contact = () => {
     <div id="contact" className="mt-12 md:mt-24 bg-zinc-900/30 border border-zinc-800 rounded-2xl p-6 md:p-12">
       <div className="text-center mb-10">
         <h3 className="text-2xl md:text-3xl font-bold mb-4 text-transparent bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text">
-          Let's create something that matters.
+          {"Let's"} create something that matters.
         </h3>
         <p className="text-zinc-400 max-w-2xl mx-auto">
           Drop me a line.
@@ -51,7 +51,7 @@ const Contact = () => {
               </div>
             </div>
             <h4 className="text-xl font-bold text-emerald-400 mb-2">Message Sent!</h4>
-            <p className="text-zinc-300">Thanks for reaching out. I'll get back to you at <span className="text-white font-medium">adrianzmei@gmail.com</span> shortly.</p>
+            <p className="text-zinc-300">Thanks for reaching out. {"I'll"} get back to you at <span className="text-white font-medium">adrianzmei@gmail.com</span> shortly.</p>
             <button 
               onClick={() => setStatus('idle')}
               className="mt-6 text-sm text-emerald-400 hover:text-emerald-300 font-medium"

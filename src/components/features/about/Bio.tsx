@@ -13,8 +13,8 @@ const Bio = () => {
           Based in <strong className="text-emerald-400">San Francisco</strong>, I build <strong className="text-blue-400">digital backbones</strong> to support real <strong className="text-purple-400">human connection</strong>.
         </p>
         <p>
-          Smart engineering isn't just about code. It's about solving problems for people.
-          When the screens go dark, I'm chasing sunsets, running trails, and breathing fresh air.
+          Smart engineering {"isn't"} just about code. {"It's"} about solving problems for people.
+          When the screens go dark, {"I'm"} chasing sunsets, running trails, and breathing fresh air.
         </p>
         <p className="font-medium text-zinc-200 italic">
           Technologist by trade. Human by design.
