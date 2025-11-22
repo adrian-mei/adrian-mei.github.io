@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { X, ArrowLeft, Clock, Calendar, ChevronRight, Terminal, Hash } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { X, ArrowLeft, Clock, Calendar, ChevronRight, Terminal, Hash, Play, Pause, Volume2 } from 'lucide-react';
 import { blogPosts, BlogPost } from '../../../data/blog';
 
 interface BlogDrawerProps {
@@ -10,6 +10,64 @@ interface BlogDrawerProps {
 const BlogDrawer = ({ isOpen, onClose }: BlogDrawerProps) => {
   const [selectedPost, setSelectedPost] = useState<BlogPost | null>(null);
   const [isClosing, setIsClosing] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [processedContent, setProcessedContent] = useState('');
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  // Process content (Simple ID injection for potential deep links, but no ToC)
+  useEffect(() => {
+    if (selectedPost) {
+      // Reset states
+      setIsSpeaking(false);
+      window.speechSynthesis.cancel();
+      
+      setProcessedContent(selectedPost.content);
+    }
+  }, [selectedPost]);
+
+  // Handle TTS
+  const toggleSpeech = () => {
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+    } else if (selectedPost) {
+      // Strip HTML for speech
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = selectedPost.content;
+      const text = tempDiv.textContent || '';
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.rate = 0.9; // Slightly slower for reading
+      window.speechSynthesis.speak(utterance);
+      setIsSpeaking(true);
+    }
+  };
+
+  // Clean up speech on close
+  useEffect(() => {
+    return () => {
+      window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  // Handle scroll progress
+  const handleScroll = () => {
+    if (!contentRef.current) return;
+    const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
+    const progress = (scrollTop / (scrollHeight - clientHeight)) * 100;
+    setScrollProgress(Math.min(100, Math.max(0, progress)));
+  };
+
+  // Reset progress when post changes
+  useEffect(() => {
+    if (contentRef.current) {
+      contentRef.current.scrollTop = 0;
+      setScrollProgress(0);
+    }
+  }, [selectedPost]);
 
   // Handle closing animation
   const handleClose = () => {
@@ -42,7 +100,7 @@ const BlogDrawer = ({ isOpen, onClose }: BlogDrawerProps) => {
 
       {/* Drawer */}
       <div 
-        className={`relative w-full max-w-2xl h-full bg-zinc-950/90 border-l border-blue-500/20 shadow-2xl transform transition-transform duration-300 ease-out flex flex-col overflow-hidden ${
+        className={`relative w-full max-w-[90vw] h-full bg-zinc-950/95 border-l border-blue-500/20 shadow-2xl transform transition-transform duration-300 ease-out flex flex-col overflow-hidden ${
           isOpen && !isClosing ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
@@ -55,132 +113,206 @@ const BlogDrawer = ({ isOpen, onClose }: BlogDrawerProps) => {
         />
         <div className="absolute inset-0 bg-gradient-to-b from-blue-500/5 to-transparent pointer-events-none" />
 
-        {/* Header */}
-        <div className="relative flex items-center justify-between p-6 border-b border-blue-500/20 bg-zinc-950/50 backdrop-blur-md">
-          <div className="flex items-center gap-4">
-            {selectedPost ? (
-              <button 
-                onClick={() => setSelectedPost(null)}
-                className="group flex items-center gap-2 px-3 py-1.5 rounded-sm bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40 transition-all text-blue-400"
-              >
-                <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
-                <span className="font-mono text-xs tracking-wider">RETURN</span>
-              </button>
-            ) : (
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-sm bg-blue-500/10 border border-blue-500/20">
-                  <Terminal className="w-5 h-5 text-blue-400" />
+        {/* Header (Sticky) */}
+        <div className="relative z-10 flex flex-col border-b border-blue-500/20 bg-zinc-950/80 backdrop-blur-xl shadow-lg">
+          <div className="flex items-center justify-between p-6">
+            <div className="flex items-center gap-4">
+              {selectedPost ? (
+                <div className="flex items-center gap-4">
+                  <button 
+                    onClick={() => setSelectedPost(null)}
+                    className="group flex items-center gap-2 px-3 py-1.5 rounded-sm bg-blue-500/10 border border-blue-500/20 hover:bg-blue-500/20 hover:border-blue-500/40 transition-all text-blue-400"
+                  >
+                    <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+                    <span className="font-mono text-xs tracking-wider">RETURN</span>
+                  </button>
+                  
+                  {/* Audio Control */}
+                  <button 
+                    onClick={toggleSpeech}
+                    className={`flex items-center gap-2 px-3 py-1.5 rounded-sm border transition-all ${
+                      isSpeaking 
+                        ? 'bg-blue-500/20 border-blue-500/40 text-blue-400 animate-pulse' 
+                        : 'bg-zinc-900/50 border-zinc-800 text-zinc-400 hover:text-zinc-200'
+                    }`}
+                  >
+                    {isSpeaking ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+                    <span className="font-mono text-xs tracking-wider hidden sm:inline">
+                      {isSpeaking ? 'PAUSE AUDIO' : 'READ ALOUD'}
+                    </span>
+                    {isSpeaking && <Volume2 className="w-3 h-3 ml-1" />}
+                  </button>
                 </div>
-                <div>
-                  <h2 className="font-mono font-bold text-zinc-100 tracking-wider flex items-center gap-2">
-                    SYSTEM_LOGS
-                    <span className="w-2 h-4 bg-blue-500 animate-pulse"/>
-                  </h2>
-                  <div className="text-[10px] text-blue-400/60 font-mono uppercase tracking-widest">
-                    Archives // v2.4.0
+              ) : (
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-sm bg-blue-500/10 border border-blue-500/20">
+                    <Terminal className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <div>
+                    <h2 className="font-mono font-bold text-zinc-100 tracking-wider flex items-center gap-2">
+                      SYSTEM_LOGS
+                      <span className="w-2 h-4 bg-blue-500 animate-pulse"/>
+                    </h2>
+                    <div className="text-[10px] text-blue-400/60 font-mono uppercase tracking-widest">
+                      Archives // v2.4.0
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
+            
+            <button 
+              onClick={handleClose}
+              className="p-2 hover:bg-red-500/10 hover:text-red-400 rounded-sm transition-colors text-zinc-500"
+            >
+              <X className="w-6 h-6" />
+            </button>
           </div>
-          
-          <button 
-            onClick={handleClose}
-            className="p-2 hover:bg-red-500/10 hover:text-red-400 rounded-sm transition-colors text-zinc-500"
-          >
-            <X className="w-6 h-6" />
-          </button>
+
+          {/* Reading Progress Bar */}
+          {selectedPost && (
+            <div className="h-1 w-full bg-zinc-800/50">
+              <div 
+                className="h-full bg-gradient-to-r from-blue-600 to-blue-400 transition-all duration-100 ease-out shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+                style={{ width: `${scrollProgress}%` }}
+              />
+            </div>
+          )}
         </div>
 
         {/* Content Area */}
-        <div className="relative flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent">
+        <div 
+          ref={contentRef}
+          onScroll={handleScroll}
+          className="relative flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-zinc-800 scrollbar-track-transparent scroll-smooth bg-zinc-950/50"
+        >
           {selectedPost ? (
-            // Detail View
-            <article className="p-8 animate-in fade-in slide-in-from-right-4 duration-300">
-              <header className="mb-8 pb-8 border-b border-dashed border-zinc-800">
-                <div className="flex gap-2 mb-6 flex-wrap">
-                  {selectedPost.tags.map(tag => (
-                    <span key={tag} className="text-[10px] font-mono uppercase tracking-wider px-2 py-1 rounded-sm bg-blue-500/5 text-blue-400 border border-blue-500/20 flex items-center gap-1">
-                      <Hash className="w-3 h-3 opacity-50" />
-                      {tag}
-                    </span>
-                  ))}
+            // Detail View (Sidebar Layout)
+            <div className="w-full max-w-[1600px] mx-auto p-8 md:p-12">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 xl:gap-24">
+                {/* Main Content */}
+                <div className="lg:col-span-8">
+                  <article className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                    <header className="mb-12">
+                        <h1 className="text-5xl md:text-7xl font-bold text-zinc-100 leading-tight tracking-tight mb-8 font-sans">
+                          {selectedPost.title}
+                        </h1>
+                        
+                        <p className="text-2xl text-zinc-400 mb-8 leading-relaxed font-serif border-l-4 border-blue-500/50 pl-6">
+                          {selectedPost.excerpt}
+                        </p>
+                    </header>
+                    
+                    <div 
+                        className="prose prose-2xl prose-invert prose-zinc max-w-none font-serif
+                        prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-zinc-100
+                        prose-h2:text-5xl prose-h2:mt-20 prose-h2:mb-8
+                        prose-h3:text-4xl prose-h3:mt-16 prose-h3:mb-6
+                        prose-p:text-zinc-300 prose-p:leading-[2.5] prose-p:text-3xl prose-p:font-light prose-p:mb-12
+                        prose-li:text-zinc-300 prose-li:leading-[2.5] prose-li:text-2xl
+                        prose-a:text-blue-400 hover:prose-a:text-blue-300 prose-a:no-underline hover:prose-a:underline prose-a:transition-colors
+                        prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-8 prose-blockquote:italic prose-blockquote:text-4xl prose-blockquote:text-zinc-400 prose-blockquote:my-16
+                        prose-code:text-blue-300 prose-code:bg-zinc-900 prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-code:font-mono prose-code:text-xl prose-code:border prose-code:border-zinc-800
+                        prose-strong:text-white prose-strong:font-semibold"
+                        dangerouslySetInnerHTML={{ __html: processedContent }}
+                    />
+                  </article>
                 </div>
-                <h1 className="text-3xl md:text-4xl font-bold text-zinc-100 mb-6 leading-tight tracking-tight">
-                  {selectedPost.title}
-                </h1>
-                <div className="flex items-center gap-6 text-xs font-mono text-zinc-500 border-l-2 border-blue-500/30 pl-4">
-                  <span className="flex items-center gap-2">
-                    <Calendar className="w-3 h-3" />
-                    {selectedPost.date}
-                  </span>
-                  <span className="text-zinc-700">|</span>
-                  <span className="flex items-center gap-2">
-                    <Clock className="w-3 h-3" />
-                    {selectedPost.readTime}
-                  </span>
-                </div>
-              </header>
-              
-              <div 
-                className="prose prose-invert prose-zinc max-w-none 
-                  prose-headings:font-bold prose-headings:tracking-tight
-                  prose-h2:text-xl prose-h2:border-b prose-h2:border-zinc-800 prose-h2:pb-2 prose-h2:mt-8
-                  prose-p:text-zinc-400 prose-p:leading-relaxed
-                  prose-a:text-blue-400 hover:prose-a:text-blue-300 prose-a:no-underline hover:prose-a:underline
-                  prose-blockquote:border-l-blue-500 prose-blockquote:bg-blue-500/5 prose-blockquote:py-1 prose-blockquote:px-4 prose-blockquote:not-italic
-                  prose-code:text-blue-300 prose-code:bg-zinc-900 prose-code:px-1 prose-code:py-0.5 prose-code:rounded-sm prose-code:font-mono prose-code:text-sm
-                  prose-strong:text-zinc-200"
-                dangerouslySetInnerHTML={{ __html: selectedPost.content }}
-              />
-            </article>
-          ) : (
-            // List View
-            <div className="p-6 space-y-1">
-              <div className="pl-4 pb-4 text-xs font-mono text-zinc-600 uppercase tracking-widest border-l border-dashed border-zinc-800 ml-[9px]">
-                Wait for input...
-              </div>
-              
-              {blogPosts.map((post, index) => (
-                <div 
-                  key={post.id}
-                  className="relative group pl-8 pb-8 border-l border-zinc-800 last:border-l-0 last:pb-0 ml-2"
-                >
-                  {/* Timeline Node */}
-                  <div className="absolute left-[-5px] top-0 w-[10px] h-[10px] rounded-full bg-zinc-900 border border-zinc-700 group-hover:border-blue-500 group-hover:bg-blue-500/20 transition-colors duration-300" />
-                  
-                  <div 
-                    onClick={() => setSelectedPost(post)}
-                    className="relative -top-1.5 p-5 rounded-sm bg-zinc-900/30 border border-transparent hover:border-blue-500/30 hover:bg-zinc-900/80 transition-all duration-300 cursor-pointer group-hover:translate-x-1"
-                  >
-                    {/* Header Meta */}
-                    <div className="flex justify-between items-start mb-3 opacity-60 group-hover:opacity-100 transition-opacity">
-                      <div className="flex gap-3 text-xs font-mono text-blue-400/80">
-                         <span>LOG_{index.toString().padStart(3, '0')}</span>
-                         <span className="text-zinc-600">::</span>
-                         <span>{post.date}</span>
+
+                {/* Sticky Sidebar */}
+                <aside className="hidden lg:block lg:col-span-4">
+                  <div className="sticky top-8 space-y-12">
+                    {/* Meta Info */}
+                    <div className="p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 backdrop-blur-sm">
+                      <h3 className="text-sm font-mono uppercase tracking-wider text-zinc-500 mb-4">Metadata</h3>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <span className="text-zinc-400">Date</span>
+                          <span className="font-mono text-zinc-200">{selectedPost.date}</span>
+                        </div>
+                        <div className="flex items-center justify-between">
+                          <span className="text-zinc-400">Read Time</span>
+                          <span className="font-mono text-zinc-200">{selectedPost.readTime}</span>
+                        </div>
+                        <div className="pt-4 border-t border-zinc-800/50">
+                          <div className="flex flex-wrap gap-2">
+                            {selectedPost.tags.map(tag => (
+                              <span key={tag} className="text-xs px-2 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono uppercase">
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
                       </div>
                     </div>
-                    
-                    <h3 className="text-lg font-bold text-zinc-300 group-hover:text-blue-400 transition-colors mb-2 flex items-center gap-2">
-                      {post.title}
-                      <ChevronRight className="w-4 h-4 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300" />
-                    </h3>
-                    
-                    <p className="text-zinc-500 text-sm line-clamp-2 font-light mb-4">
-                      {post.excerpt}
-                    </p>
-                    
-                    <div className="flex gap-2">
-                      {post.tags.slice(0, 3).map(tag => (
-                        <span key={tag} className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm bg-zinc-800 text-zinc-400 border border-zinc-700 group-hover:border-blue-500/30 group-hover:text-blue-400/80 transition-colors">
-                          {tag}
-                        </span>
-                      ))}
+
+                    {/* Author */}
+                    <div className="p-6 rounded-xl bg-zinc-900/30 border border-zinc-800/50 backdrop-blur-sm">
+                      <h3 className="text-sm font-mono uppercase tracking-wider text-zinc-500 mb-4">Author</h3>
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700 text-zinc-400 font-mono text-lg">
+                          AM
+                        </div>
+                        <div>
+                          <div className="font-bold text-zinc-200">Adrian Mei</div>
+                          <div className="text-sm text-zinc-500">System Architect</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                </aside>
+              </div>
+            </div>
+          ) : (
+            // List View (Grid)
+            <div className="p-8 md:p-12">
+              <div className="mb-8 flex items-center gap-4">
+                  <div className="h-px flex-1 bg-zinc-800/50"></div>
+                  <div className="text-xs font-mono text-zinc-500 uppercase tracking-widest">
+                    Select a Data Log to Decrypt
+                  </div>
+                  <div className="h-px flex-1 bg-zinc-800/50"></div>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                {blogPosts.map((post, index) => (
+                    <div 
+                    key={post.id}
+                    onClick={() => setSelectedPost(post)}
+                    className="group relative flex flex-col h-full p-6 rounded-xl bg-zinc-900/20 border border-zinc-800/50 hover:border-blue-500/30 hover:bg-zinc-900/60 transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:shadow-xl hover:shadow-blue-500/5"
+                    >
+                    {/* Corner Accents */}
+                    <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-zinc-700 group-hover:border-blue-500/50 transition-colors opacity-0 group-hover:opacity-100" />
+                    <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-zinc-700 group-hover:border-blue-500/50 transition-colors opacity-0 group-hover:opacity-100" />
+
+                    {/* Header Meta */}
+                    <div className="flex justify-between items-center mb-4 opacity-60 group-hover:opacity-100 transition-opacity">
+                        <div className="flex gap-2 text-[10px] font-mono text-blue-400/80 bg-blue-500/5 px-2 py-1 rounded">
+                            <span>LOG_{index.toString().padStart(3, '0')}</span>
+                        </div>
+                    </div>
+                    
+                    <h3 className="text-xl font-bold text-zinc-200 group-hover:text-blue-400 transition-colors mb-3 leading-tight">
+                        {post.title}
+                    </h3>
+                    
+                    <p className="text-zinc-500 text-sm leading-relaxed mb-6 flex-1">
+                        {post.excerpt}
+                    </p>
+                    
+                    <div className="flex items-center justify-between mt-auto pt-4 border-t border-zinc-800/50 group-hover:border-blue-500/10 transition-colors">
+                        <div className="flex gap-2">
+                        {post.tags.slice(0, 2).map(tag => (
+                            <span key={tag} className="text-[10px] uppercase tracking-wider px-1.5 py-0.5 rounded-sm bg-zinc-800/50 text-zinc-400 border border-zinc-700/50 group-hover:border-blue-500/20 group-hover:text-blue-400/80 transition-colors">
+                            {tag}
+                            </span>
+                        ))}
+                        </div>
+                        <ChevronRight className="w-4 h-4 text-zinc-600 group-hover:text-blue-400 group-hover:translate-x-1 transition-all" />
+                    </div>
+                    </div>
+                ))}
+              </div>
             </div>
           )}
         </div>
