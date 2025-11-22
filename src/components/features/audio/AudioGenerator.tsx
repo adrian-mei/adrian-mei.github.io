@@ -14,7 +14,7 @@ export const AudioGenerator: React.FC = () => {
   // Initialize Audio
   useEffect(() => {
     setMounted(true);
-    const audio = new Audio('/mp3/sleep.mp3');
+    const audio = new Audio('/mp3/sleep.webm');
     audio.loop = true;
     audio.volume = volume;
     audioRef.current = audio;
