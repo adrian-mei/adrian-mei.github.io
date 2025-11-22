@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as THREE from 'three';
-import useIntersectionObserver from '../../../hooks/useIntersectionObserver';
+import useIntersectionObserver from '../../../hooks/core/useIntersectionObserver';
 import MobileConstellation from './MobileConstellation';
 
 // Helper to create star texture

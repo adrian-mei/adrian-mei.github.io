@@ -193,26 +193,47 @@ const BlogDrawer = ({ isOpen, onClose }: BlogDrawerProps) => {
                 {/* Main Content */}
                 <div className="lg:col-span-8">
                   <article className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <header className="mb-20">
-                        <h1 className="text-6xl md:text-8xl font-bold text-zinc-100 leading-tight tracking-tight mb-10 font-sans">
+                    <header className="mb-12 md:mb-20">
+                        {/* Mobile Metadata */}
+                        <div className="lg:hidden mb-8 space-y-4 border-b border-zinc-800 pb-8">
+                            <div className="flex flex-wrap gap-4 text-sm text-zinc-400">
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="w-4 h-4" />
+                                    <span>{selectedPost.date}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Clock className="w-4 h-4" />
+                                    <span>{selectedPost.readTime}</span>
+                                </div>
+                            </div>
+                            <div className="flex flex-wrap gap-2">
+                                {selectedPost.tags.map(tag => (
+                                    <span key={tag} className="text-xs px-2 py-1 rounded bg-blue-500/10 text-blue-400 border border-blue-500/20 font-mono uppercase">
+                                        {tag}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <h1 className="text-4xl md:text-6xl lg:text-8xl font-bold text-zinc-100 leading-tight tracking-tight mb-6 md:mb-10 font-sans">
                           {selectedPost.title}
                         </h1>
                         
-                        <p className="text-4xl text-zinc-400 mb-12 leading-relaxed font-serif border-l-4 border-blue-500/50 pl-6">
+                        <p className="text-xl md:text-2xl lg:text-4xl text-zinc-400 mb-8 md:mb-12 leading-relaxed font-serif border-l-4 border-blue-500/50 pl-4 md:pl-6">
                           {selectedPost.excerpt}
                         </p>
                     </header>
                     
                   <div 
-                      className="prose prose-2xl prose-invert prose-zinc max-w-none font-serif
+                      className="prose prose-lg md:prose-2xl prose-invert prose-zinc max-w-none font-serif
                       prose-headings:font-sans prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-zinc-100
-                      prose-h2:text-6xl prose-h2:mt-28 prose-h2:mb-10
-                      prose-h3:text-5xl prose-h3:mt-20 prose-h3:mb-8
-                      prose-p:text-zinc-300 prose-p:leading-[2.2] prose-p:text-4xl prose-p:font-light prose-p:mb-16
-                      prose-li:text-zinc-300 prose-li:leading-[2.2] prose-li:text-4xl
+                      prose-h2:text-3xl md:prose-h2:text-6xl prose-h2:mt-16 md:prose-h2:mt-28 prose-h2:mb-6 md:prose-h2:mb-10
+                      prose-h3:text-2xl md:prose-h3:text-5xl prose-h3:mt-12 md:prose-h3:mt-20 prose-h3:mb-4 md:prose-h3:mb-8
+                      prose-p:text-zinc-300 prose-p:leading-relaxed md:prose-p:leading-[2.2] prose-p:text-lg md:prose-p:text-4xl prose-p:font-light prose-p:mb-8 md:prose-p:mb-16
+                      prose-li:text-zinc-300 prose-li:leading-relaxed md:prose-li:leading-[2.2] prose-li:text-lg md:prose-li:text-4xl
                       prose-a:text-blue-400 hover:prose-a:text-blue-300 prose-a:no-underline hover:prose-a:underline prose-a:transition-colors
-                      prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-8 prose-blockquote:italic prose-blockquote:text-5xl prose-blockquote:text-zinc-400 prose-blockquote:my-20
-                      prose-code:text-blue-300 prose-code:bg-zinc-900 prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-code:font-mono prose-code:text-2xl prose-code:border prose-code:border-zinc-800
+                      prose-blockquote:border-l-4 prose-blockquote:border-blue-500 prose-blockquote:pl-6 md:prose-blockquote:pl-8 prose-blockquote:italic prose-blockquote:text-2xl md:prose-blockquote:text-5xl prose-blockquote:text-zinc-400 prose-blockquote:my-12 md:prose-blockquote:my-20
+                      prose-code:text-blue-300 prose-code:bg-zinc-900 prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-code:font-mono prose-code:text-sm md:prose-code:text-2xl prose-code:border prose-code:border-zinc-800
                       prose-strong:text-white prose-strong:font-semibold"
                       dangerouslySetInnerHTML={{ __html: processedContent }}
                   />

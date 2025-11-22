@@ -11,8 +11,8 @@ import GameManager from '../src/components/features/arcade/GameManager';
 import BlogDrawer from '../src/components/features/blog/BlogDrawer';
 import GalleryDrawer from '../src/components/features/gallery/GalleryDrawer';
 import ErrorBoundary from '../src/components/ErrorBoundary';
-import useIntersectionObserver from '../src/hooks/useIntersectionObserver';
-import useExtensionDetector from '../src/hooks/useExtensionDetector';
+import useIntersectionObserver from '../src/hooks/core/useIntersectionObserver';
+import useExtensionDetector from '../src/hooks/core/useExtensionDetector';
 
 const Home = () => {
   const { isDetected, extensionName } = useExtensionDetector();

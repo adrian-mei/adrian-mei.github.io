@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from 'react';
 import dynamic from 'next/dynamic';
-import { useKonamiCode } from '../../../hooks/useKonamiCode';
+import { useKonamiCode } from '../../../hooks/game/useKonamiCode';
 
 // Lazy load the GameEmulator to avoid loading heavy emulator code on initial page load
 const GameEmulator = dynamic(() => import('./GameEmulator'), {

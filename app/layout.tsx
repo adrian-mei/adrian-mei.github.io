@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
-import { LoggingProvider } from '@/src/components/features/analytics/LoggingProvider'
+import { LoggingProvider } from '@/src/providers/LoggingProvider'
 
 export const metadata: Metadata = {
   title: "Adrian's Portfolio",

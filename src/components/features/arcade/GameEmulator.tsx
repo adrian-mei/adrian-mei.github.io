@@ -279,6 +279,38 @@ const GameEmulator: React.FC<GameEmulatorProps> = ({ romPath, onClose }) => {
       return activeKeys[code] ? activeClass : baseClass;
   };
 
+  // Direct Input Handling
+  const handleInput = (code: string, isPressed: boolean) => {
+      // 1. Update Visual State
+      setActiveKeys(prev => ({ ...prev, [code]: isPressed }));
+
+      // 2. Direct Game Input Control
+      // The emulator might not respect synthetic KeyboardEvents due to security or implementation details.
+      // Instead, we directly manipulate the emulator's internal input state as per docs.
+      if (gameboyInstance && gameboyInstance.input) {
+          switch (code) {
+              case 'ArrowUp': gameboyInstance.input.isPressingUp = isPressed; break;
+              case 'ArrowDown': gameboyInstance.input.isPressingDown = isPressed; break;
+              case 'ArrowLeft': gameboyInstance.input.isPressingLeft = isPressed; break;
+              case 'ArrowRight': gameboyInstance.input.isPressingRight = isPressed; break;
+              case 'KeyZ': gameboyInstance.input.isPressingB = isPressed; break;
+              case 'KeyX': gameboyInstance.input.isPressingA = isPressed; break;
+              case 'ShiftLeft': gameboyInstance.input.isPressingSelect = isPressed; break;
+              case 'Enter': gameboyInstance.input.isPressingStart = isPressed; break;
+          }
+      }
+  };
+
+  const getTouchProps = (code: string) => ({
+      onMouseDown: (e: React.MouseEvent) => { e.preventDefault(); handleInput(code, true); },
+      onMouseUp: (e: React.MouseEvent) => { e.preventDefault(); handleInput(code, false); },
+      onMouseLeave: (e: React.MouseEvent) => { 
+          if (activeKeys[code]) handleInput(code, false); 
+      },
+      onTouchStart: (e: React.TouchEvent) => { e.preventDefault(); handleInput(code, true); },
+      onTouchEnd: (e: React.TouchEvent) => { e.preventDefault(); handleInput(code, false); }
+  });
+
   return (
     <div 
         className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center backdrop-blur-sm"
@@ -405,66 +437,78 @@ const GameEmulator: React.FC<GameEmulatorProps> = ({ romPath, onClose }) => {
 
             {/* Control Panel (Bottom) */}
             {isPlaying && (
-                <div className="w-full bg-zinc-900 rounded-b-lg p-6 mt-2 border-t-4 border-zinc-700 shadow-inner">
-                    <div className="flex justify-between items-center max-w-2xl mx-auto">
+                <div className="w-full bg-zinc-900 rounded-b-lg p-4 md:p-8 mt-2 border-t-4 border-zinc-700 shadow-inner">
+                    <div className="flex flex-row flex-wrap justify-between items-end max-w-4xl mx-auto">
                         
-                        {/* D-Pad Area */}
-                        <div className="flex flex-col items-center gap-2">
-                            <span className="text-[10px] text-zinc-500 uppercase tracking-widest">Direction</span>
-                            <div className="bg-zinc-800 p-3 rounded-full border-2 border-zinc-700 shadow-lg">
-                                <div className="grid grid-cols-3 gap-1">
-                                    <div></div>
-                                    <div className={`w-8 h-8 bg-zinc-950 rounded-t border border-zinc-700 flex items-center justify-center transition-colors ${getBtnClass('ArrowUp', '', 'bg-zinc-700 border-emerald-500')}`}>
-                                        <span className={`text-xs ${activeKeys['ArrowUp'] ? 'text-emerald-400' : 'text-zinc-600'}`}>▲</span>
-                                    </div>
-                                    <div></div>
-                                    <div className={`w-8 h-8 bg-zinc-950 rounded-l border border-zinc-700 flex items-center justify-center transition-colors ${getBtnClass('ArrowLeft', '', 'bg-zinc-700 border-emerald-500')}`}>
-                                        <span className={`text-xs ${activeKeys['ArrowLeft'] ? 'text-emerald-400' : 'text-zinc-600'}`}>◀</span>
-                                    </div>
-                                    <div className="w-8 h-8 bg-zinc-900 rounded-full"></div>
-                                    <div className={`w-8 h-8 bg-zinc-950 rounded-r border border-zinc-700 flex items-center justify-center transition-colors ${getBtnClass('ArrowRight', '', 'bg-zinc-700 border-emerald-500')}`}>
-                                        <span className={`text-xs ${activeKeys['ArrowRight'] ? 'text-emerald-400' : 'text-zinc-600'}`}>▶</span>
-                                    </div>
-                                    <div></div>
-                                    <div className={`w-8 h-8 bg-zinc-950 rounded-b border border-zinc-700 flex items-center justify-center transition-colors ${getBtnClass('ArrowDown', '', 'bg-zinc-700 border-emerald-500')}`}>
-                                        <span className={`text-xs ${activeKeys['ArrowDown'] ? 'text-emerald-400' : 'text-zinc-600'}`}>▼</span>
-                                    </div>
-                                    <div></div>
-                                </div>
-                            </div>
-                            <span className="text-xs font-mono text-zinc-400 mt-1">ARROWS</span>
-                        </div>
+                        {/* D-Pad Area (Left) */}
+                        <div className="order-1 relative w-32 h-32 md:w-32 md:h-32 bg-zinc-800/50 rounded-full border-2 border-zinc-700/50 flex items-center justify-center shrink-0">
+                            <div className="relative w-24 h-24 md:w-24 md:h-24">
+                                {/* Center Axis */}
+                                <div className="absolute top-1/3 left-1/3 w-1/3 h-1/3 bg-zinc-950 z-10"></div>
 
-                        {/* Center Buttons */}
-                        <div className="flex gap-6 px-8">
-                            <div className="flex flex-col items-center gap-1">
-                                <div className={`w-12 h-4 bg-zinc-950 rounded-full border border-zinc-700 transform -rotate-12 transition-colors ${getBtnClass('ShiftLeft', '', 'bg-emerald-900 border-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]')}`}></div>
-                                <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Select</span>
-                                <span className={`text-xs font-mono ${activeKeys['ShiftLeft'] ? 'text-emerald-400' : 'text-zinc-400'}`}>SHIFT</span>
-                            </div>
-                            <div className="flex flex-col items-center gap-1">
-                                <div className={`w-12 h-4 bg-zinc-950 rounded-full border border-zinc-700 transform -rotate-12 transition-colors ${getBtnClass('Enter', '', 'bg-emerald-900 border-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]')}`}></div>
-                                <span className="text-[10px] text-zinc-500 uppercase tracking-wider">Start</span>
-                                <span className={`text-xs font-mono ${activeKeys['Enter'] ? 'text-emerald-400' : 'text-zinc-400'}`}>ENTER</span>
+                                {/* Buttons */}
+                                <button 
+                                    {...getTouchProps('ArrowUp')}
+                                    className={`absolute top-0 left-1/3 w-1/3 h-1/3 bg-zinc-950 rounded-t-md border-t-2 border-l-2 border-r-2 border-zinc-800 flex items-center justify-center active:bg-zinc-800 touch-none transition-colors ${activeKeys['ArrowUp'] ? '!bg-zinc-800' : ''}`}
+                                >
+                                    <span className={`text-xs ${activeKeys['ArrowUp'] ? 'text-emerald-400' : 'text-zinc-600'}`}>▲</span>
+                                </button>
+                                <button 
+                                    {...getTouchProps('ArrowLeft')}
+                                    className={`absolute top-1/3 left-0 w-1/3 h-1/3 bg-zinc-950 rounded-l-md border-l-2 border-t-2 border-b-2 border-zinc-800 flex items-center justify-center active:bg-zinc-800 touch-none transition-colors ${activeKeys['ArrowLeft'] ? '!bg-zinc-800' : ''}`}
+                                >
+                                    <span className={`text-xs ${activeKeys['ArrowLeft'] ? 'text-emerald-400' : 'text-zinc-600'}`}>◀</span>
+                                </button>
+                                <button 
+                                    {...getTouchProps('ArrowRight')}
+                                    className={`absolute top-1/3 right-0 w-1/3 h-1/3 bg-zinc-950 rounded-r-md border-r-2 border-t-2 border-b-2 border-zinc-800 flex items-center justify-center active:bg-zinc-800 touch-none transition-colors ${activeKeys['ArrowRight'] ? '!bg-zinc-800' : ''}`}
+                                >
+                                    <span className={`text-xs ${activeKeys['ArrowRight'] ? 'text-emerald-400' : 'text-zinc-600'}`}>▶</span>
+                                </button>
+                                <button 
+                                    {...getTouchProps('ArrowDown')}
+                                    className={`absolute bottom-0 left-1/3 w-1/3 h-1/3 bg-zinc-950 rounded-b-md border-b-2 border-l-2 border-r-2 border-zinc-800 flex items-center justify-center active:bg-zinc-800 touch-none transition-colors ${activeKeys['ArrowDown'] ? '!bg-zinc-800' : ''}`}
+                                >
+                                    <span className={`text-xs ${activeKeys['ArrowDown'] ? 'text-emerald-400' : 'text-zinc-600'}`}>▼</span>
+                                </button>
                             </div>
                         </div>
 
-                        {/* Action Buttons */}
-                        <div className="flex flex-col items-center gap-2">
-                            <span className="text-[10px] text-zinc-500 uppercase tracking-widest">Action</span>
-                            <div className="flex gap-4 transform rotate-12">
-                                <div className="flex flex-col items-center gap-1">
-                                    <div className={`w-12 h-12 bg-red-700 rounded-full border-b-4 border-red-900 shadow-lg flex items-center justify-center transition-all ${getBtnClass('KeyZ', '', 'border-b-0 translate-y-1 bg-red-600 shadow-none')}`}>
-                                        <span className="text-red-900 font-black text-lg opacity-50">B</span>
-                                    </div>
-                                    <span className={`text-xs font-mono -rotate-12 ${activeKeys['KeyZ'] ? 'text-red-400' : 'text-zinc-400'}`}>Key Z</span>
-                                </div>
-                                <div className="flex flex-col items-center gap-1 mt-4">
-                                    <div className={`w-12 h-12 bg-yellow-600 rounded-full border-b-4 border-yellow-800 shadow-lg flex items-center justify-center transition-all ${getBtnClass('KeyX', '', 'border-b-0 translate-y-1 bg-yellow-500 shadow-none')}`}>
-                                        <span className="text-yellow-900 font-black text-lg opacity-50">A</span>
-                                    </div>
-                                    <span className={`text-xs font-mono -rotate-12 ${activeKeys['KeyX'] ? 'text-yellow-400' : 'text-zinc-400'}`}>Key X</span>
-                                </div>
+                        {/* Action Buttons (Right) */}
+                        <div className="order-2 flex items-end gap-4 pb-2 md:pb-0">
+                            <div className="flex flex-col items-center gap-1 translate-y-4">
+                                <button 
+                                    {...getTouchProps('KeyZ')}
+                                    className={`w-14 h-14 md:w-14 md:h-14 bg-red-700 rounded-full border-b-4 border-red-900 shadow-lg flex items-center justify-center active:scale-95 active:border-b-0 active:translate-y-1 touch-none transition-all ${activeKeys['KeyZ'] ? 'translate-y-1 border-b-0 bg-red-600' : ''}`}
+                                >
+                                    <span className="text-red-900 font-black text-xl opacity-50">B</span>
+                                </button>
+                            </div>
+                            <div className="flex flex-col items-center gap-1 mb-6">
+                                <button 
+                                    {...getTouchProps('KeyX')}
+                                    className={`w-14 h-14 md:w-14 md:h-14 bg-yellow-600 rounded-full border-b-4 border-yellow-800 shadow-lg flex items-center justify-center active:scale-95 active:border-b-0 active:translate-y-1 touch-none transition-all ${activeKeys['KeyX'] ? 'translate-y-1 border-b-0 bg-yellow-500' : ''}`}
+                                >
+                                    <span className="text-yellow-900 font-black text-xl opacity-50">A</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Center Buttons (Bottom Center) */}
+                        <div className="order-3 w-full flex justify-center gap-8 mt-6 md:mt-8">
+                            <div className="flex flex-col items-center gap-1">
+                                <button 
+                                    {...getTouchProps('ShiftLeft')}
+                                    className={`w-16 h-6 md:w-14 md:h-5 bg-zinc-950 rounded-full border border-zinc-700 transform -rotate-12 active:scale-95 active:bg-zinc-800 touch-none transition-all ${activeKeys['ShiftLeft'] ? '!bg-zinc-800 !border-emerald-500' : ''}`}
+                                ></button>
+                                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Select</span>
+                            </div>
+                            <div className="flex flex-col items-center gap-1">
+                                <button 
+                                    {...getTouchProps('Enter')}
+                                    className={`w-16 h-6 md:w-14 md:h-5 bg-zinc-950 rounded-full border border-zinc-700 transform -rotate-12 active:scale-95 active:bg-zinc-800 touch-none transition-all ${activeKeys['Enter'] ? '!bg-zinc-800 !border-emerald-500' : ''}`}
+                                ></button>
+                                <span className="text-[10px] text-zinc-500 uppercase tracking-wider font-bold">Start</span>
                             </div>
                         </div>
 
