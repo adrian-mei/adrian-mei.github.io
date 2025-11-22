@@ -1,11 +1,5 @@
 import { logger } from '@/src/services/logger';
-
-export interface ChatMessage {
-  id?: string;
-  role: 'user' | 'assistant' | 'system' | 'data' | 'tool';
-  content: string;
-  createdAt?: Date;
-}
+import { ChatMessage } from '@/src/types/chat';
 
 /**
  * Manually streams chat completion from the backend.

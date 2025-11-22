@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { X, Camera, Maximize2, Play, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { galleryItems, GalleryItem } from '../../../data/gallery';
+import { logger } from '@/src/services/logger';
 
 interface GalleryDrawerProps {
   isOpen: boolean;
@@ -30,16 +31,19 @@ const GalleryDrawer = ({ isOpen, onClose }: GalleryDrawerProps) => {
     if (selectedIndex === -1) return;
     const nextIndex = (selectedIndex + 1) % filteredItems.length;
     setSelectedImage(filteredItems[nextIndex]);
+    logger.action('gallery_nav_next', { id: filteredItems[nextIndex].id });
   };
 
   const handlePrev = () => {
     if (selectedIndex === -1) return;
     const prevIndex = (selectedIndex - 1 + filteredItems.length) % filteredItems.length;
     setSelectedImage(filteredItems[prevIndex]);
+    logger.action('gallery_nav_prev', { id: filteredItems[prevIndex].id });
   };
 
   const handleSelect = (item: GalleryItem) => {
     setSelectedImage(item);
+    logger.action('gallery_select_image', { id: item.id, category: item.category });
   };
 
   // Auto-scroll filmstrip to active item
@@ -74,7 +78,10 @@ const GalleryDrawer = ({ isOpen, onClose }: GalleryDrawerProps) => {
       if (selectedImage) {
         if (e.key === 'ArrowRight') handleNext();
         if (e.key === 'ArrowLeft') handlePrev();
-        if (e.key === 'Escape') setSelectedImage(null);
+        if (e.key === 'Escape') {
+          setSelectedImage(null);
+          logger.action('gallery_close_lightbox');
+        }
       } else {
         if (e.key === 'Escape') onClose();
       }
@@ -124,7 +131,10 @@ const GalleryDrawer = ({ isOpen, onClose }: GalleryDrawerProps) => {
             {categories.map((category) => (
               <button
                 key={category}
-                onClick={() => setActiveCategory(category)}
+                onClick={() => {
+                  setActiveCategory(category);
+                  logger.action('gallery_filter', { category });
+                }}
                 className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-all duration-300 ${
                   activeCategory === category
                     ? 'bg-pink-500 text-white shadow-lg shadow-pink-500/25'
@@ -144,7 +154,7 @@ const GalleryDrawer = ({ isOpen, onClose }: GalleryDrawerProps) => {
               <div 
                 key={item.id}
                 className="break-inside-avoid group relative cursor-zoom-in rounded-xl overflow-hidden bg-zinc-900 border border-zinc-800/50 animate-in fade-in duration-500 fill-mode-backwards"
-                onClick={() => setSelectedImage(item)}
+                onClick={() => handleSelect(item)}
               >
                 <div className="relative w-full">
                   {item.type === 'video' ? (
@@ -207,7 +217,10 @@ const GalleryDrawer = ({ isOpen, onClose }: GalleryDrawerProps) => {
           {/* Close Button - Floating */}
           <button 
             className="absolute top-6 right-6 p-3 text-white/80 hover:text-white bg-black/20 backdrop-blur-md rounded-full hover:bg-white/20 transition-all z-50"
-            onClick={() => setSelectedImage(null)}
+            onClick={() => {
+              setSelectedImage(null);
+              logger.action('gallery_close_lightbox');
+            }}
           >
             <X className="w-6 h-6" />
           </button>

@@ -1,6 +1,7 @@
 // src/components/about/Contact.tsx
 import React, { useState } from 'react';
 import { Mail, Github, Linkedin, Send, CheckCircle } from 'lucide-react';
+import { logger } from '@/src/services/logger';
 
 const Contact = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,8 @@ const Contact = () => {
     e.preventDefault();
     setStatus('sending');
     
+    logger.action('contact_form_submit');
+
     // Simulate network request
     await new Promise(resolve => setTimeout(resolve, 1500));
     
@@ -121,15 +124,31 @@ const Contact = () => {
         )}
 
         <div className="mt-12 pt-8 border-t border-zinc-800 flex justify-center gap-8">
-           <a href="mailto:adrianzmei@gmail.com" className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
+           <a 
+             href="mailto:adrianzmei@gmail.com" 
+             className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors"
+             onClick={() => logger.action('click_social', { platform: 'email' })}
+           >
              <Mail className="w-5 h-5" />
              <span className="text-sm">Email</span>
            </a>
-           <a href="https://github.com/adrian-mei/" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
+           <a 
+             href="https://github.com/adrian-mei/" 
+             target="_blank" 
+             rel="noreferrer" 
+             className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors"
+             onClick={() => logger.action('click_social', { platform: 'github' })}
+           >
              <Github className="w-5 h-5" />
              <span className="text-sm">GitHub</span>
            </a>
-           <a href="https://www.linkedin.com/in/zhipengmei/" target="_blank" rel="noreferrer" className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors">
+           <a 
+             href="https://www.linkedin.com/in/zhipengmei/" 
+             target="_blank" 
+             rel="noreferrer" 
+             className="flex items-center gap-2 text-zinc-400 hover:text-white transition-colors"
+             onClick={() => logger.action('click_social', { platform: 'linkedin' })}
+           >
              <Linkedin className="w-5 h-5" />
              <span className="text-sm">LinkedIn</span>
            </a>

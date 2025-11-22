@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
-import { ChatMessage } from '@/src/services/chat-service';
+import { ChatMessage } from '@/src/types/chat';
+import { logger } from '@/src/services/logger';
 
 export const useChatUI = (messages: ChatMessage[]) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -42,7 +43,11 @@ export const useChatUI = (messages: ChatMessage[]) => {
   }, [isOpen, messages]);
 
   const toggleChat = useCallback(() => {
-    setIsOpen(prev => !prev);
+    setIsOpen(prev => {
+      const newState = !prev;
+      logger.action('toggle_chat', { open: newState });
+      return newState;
+    });
   }, []);
 
   return {

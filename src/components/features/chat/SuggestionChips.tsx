@@ -1,6 +1,6 @@
 import React from 'react';
 import { getSuggestions } from '../../../data/chat-scripts';
-import { ChatMessage } from '../../../services/chat-service';
+import { ChatMessage } from '@/src/types/chat';
 import { logger } from '@/src/services/logger';
 
 interface SuggestionChipsProps {

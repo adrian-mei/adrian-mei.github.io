@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Gameboy } from '@neil-morrison44/gameboy-emulator';
 import { X, Gamepad2, Volume2, VolumeX, Loader2, Coins } from 'lucide-react';
+import { logger } from '@/src/services/logger';
 
 interface GameEmulatorProps {
   romPath: string;
@@ -91,7 +92,7 @@ const GameEmulator: React.FC<GameEmulatorProps> = ({ romPath, onClose }) => {
         setGameboyInstance(gb);
 
         // Fetch ROM
-        console.log(`Fetching ROM from: ${romPath}`);
+        logger.info(`Fetching ROM from: ${romPath}`);
         const response = await fetch(romPath);
         
         if (!response.ok) {
@@ -104,7 +105,7 @@ const GameEmulator: React.FC<GameEmulatorProps> = ({ romPath, onClose }) => {
         }
 
         const arrayBuffer = await response.arrayBuffer();
-        console.log(`ROM loaded, size: ${arrayBuffer.byteLength} bytes`);
+        logger.info(`ROM loaded, size: ${arrayBuffer.byteLength} bytes`, { path: romPath });
 
         // Load ROM
         gb.loadGame(arrayBuffer);
@@ -123,7 +124,7 @@ const GameEmulator: React.FC<GameEmulatorProps> = ({ romPath, onClose }) => {
         setIsLoading(false);
 
       } catch (error) {
-        console.error("Failed to load game:", error);
+        logger.error("Failed to load game:", error);
         setIsLoading(false);
       }
     };
@@ -226,11 +227,14 @@ const GameEmulator: React.FC<GameEmulatorProps> = ({ romPath, onClose }) => {
     // Manual toggle clears auto-mute flag to prevent unwanted behavior
     wasAutoMuted.current = false;
     setIsMuted(!isMuted);
+    logger.action('toggle_mute', { muted: !isMuted });
   };
 
   const handleInsertCoin = () => {
       if (!gameboyInstance) return;
       
+      logger.action('game_boot', { event: 'insert_coin' });
+
       // 1. Enable Audio immediately ONLY if not muted (must be in user gesture)
       // Note: We rely on the useEffect above to sync state, but for the initial trigger 
       // we might need to ensure the context is resumed if !isMuted.

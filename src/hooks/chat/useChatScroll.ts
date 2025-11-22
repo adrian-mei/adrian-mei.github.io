@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { ChatMessage } from '@/src/services/chat-service';
+import { ChatMessage } from '@/src/types/chat';
 
 export const useChatScroll = (messages: ChatMessage[], isLoading: boolean, isOpen: boolean) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
