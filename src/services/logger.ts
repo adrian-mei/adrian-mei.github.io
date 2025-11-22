@@ -6,7 +6,7 @@ const isDev = process.env.NODE_ENV === 'development';
 // Master Toggle for Logging
 // Set to true to enable console logging and server-side shipping (for non-errors).
 // Errors are ALWAYS logged.
-export const ENABLE_LOGGING = false;
+export const ENABLE_LOGGING = true;
 
 export type LogEventCategory = 'ACTION' | 'API' | 'NAVIGATION' | 'CHAT' | 'SYSTEM';
 
